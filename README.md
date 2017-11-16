@@ -2,6 +2,11 @@
 
 MOPSI (MOdéliser Programmer SImuler) project at ENPC Engineering School, Mathematics and CS department.
 
+Team :
+- Guillaume DESFORGES
+- Maïlys Rheins
+- Diane Pugès
+
 ## Goal
 
 Identify pictures in a database that are close to a given picture.
@@ -21,11 +26,11 @@ Pictures that are most likely "alike" are those sharing a lot of those features.
 
 1. Dependencies
     * cmake
-* Clone repository
-* Build
+2. Clone repository
+3. Build
     * Go to project folder
     * Create _build_ folder
     * Go to that _build_ folder
     * On Linux : `cmake .. && make`
-* Test
+4. Test
     * On Linux : `./bin/clustering` should print a kmeans 1D test
