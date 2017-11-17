@@ -18,7 +18,8 @@ public:
     int getCluster(const P &point);
 
     // Define training set
-    void init(const vector<P> &data);
+    void init(vector<P*> &data);
+    void init(vector<P> &data);
 
     // Train (init() must be called before)
     void fit();
@@ -27,10 +28,10 @@ public:
     const vector<P> getMeans() const;
 
     // Get training clusters
-    const vector<vector<P*>> getPartitions() const;
+    vector<vector<P*>> getPartitions() const;
 private:
     int n_clusters, dimension;
-    vector<P> data;
+    vector<P*> data;
     vector<P> means;
     vector<vector<P*>> partitions;
     bool initiated = false;
@@ -51,12 +52,12 @@ KMeans<P, T>::KMeans(int n_clusters, int dimension) {
 }
 
 template<typename P, typename T>
-void KMeans<P, T>::init(const vector<P> &data) {
+void KMeans<P, T>::init(vector<P*> &data) {
     assert(data.size() >= n_clusters);
     this->data = data;
 
     // Select random points
-    // TODO improve to another selection
+    // TODO improve kmeans init to select relevant starting points
     vector<int> indexes(data.size());
     for(int k = 0; k < data.size(); k++) {
         indexes[k] = k;
@@ -65,10 +66,22 @@ void KMeans<P, T>::init(const vector<P> &data) {
     std::mt19937 rng(rd());
     shuffle(indexes.begin(), indexes.end(), rng);
     for(int k = 0; k < n_clusters; k++) {
-        means[k] = data[indexes[k]];
+        Point<T> p(dimension);
+        p = *(data[indexes[k]]);
+        means[k] = p;
     }
     assert(means.size() == n_clusters);
     initiated = true;
+}
+
+template<typename P, typename T>
+void KMeans<P, T>::init(vector<P> &data) {
+    vector<P*> data_p;
+    for(int k = 0; k < data.size(); k++) {
+        P* p = &(data[k]);
+        data_p.push_back(p);
+    }
+    init(data_p);
 }
 
 template<typename P, typename T>
@@ -120,8 +133,8 @@ void KMeans<P, T>::fit() {
     assert(initiated);
     // Init clusters
     for(int k = 0; k < data.size(); k++) {
-        int cluster = getCluster(data[k]);
-        partitions[cluster].push_back(&(data[k]));
+        int cluster = getCluster(*data[k]);
+        partitions[cluster].push_back(data[k]);
     }
     // Compute first repartition
     computeMeans();
@@ -140,7 +153,7 @@ const vector<P> KMeans<P, T>::getMeans() const {
 }
 
 template<typename P, typename T>
-const vector<vector<P*>> KMeans<P, T>::getPartitions() const {
+vector<vector<P*>> KMeans<P, T>::getPartitions() const {
     return partitions;
 }
 
