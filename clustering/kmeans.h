@@ -56,7 +56,7 @@ void KMeans<P, T>::init(const vector<P> &data) {
     this->data = data;
 
     // Select random points
-    // TODO : improve to another selection
+    // TODO improve to another selection
     vector<int> indexes(data.size());
     for(int k = 0; k < data.size(); k++) {
         indexes[k] = k;
@@ -128,7 +128,7 @@ void KMeans<P, T>::fit() {
     bool changed = true;
     int iteration = 0;
     while (changed) {
-        cout << "Iteration " << iteration << endl;
+        // cout << "Iteration " << iteration << endl;
         changed = update();
         iteration++;
     }

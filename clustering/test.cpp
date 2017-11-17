@@ -4,10 +4,9 @@ using namespace std;
 
 #include "point.h"
 #include "kmeans.h"
+#include "kmeanstree.h"
 
 int main() {
-    cout << "Test clustering" << endl;
-
     cout << "Init data" << endl;
     int n = 4;
     int N = 10, D = 2;
@@ -20,6 +19,7 @@ int main() {
         data.push_back(p);
     }
 
+    cout << "* Test KMeans" << endl;
     cout << "Init kmeans" << endl;
     KMeans<Point<float>, float> kmeans(n, D);
     kmeans.init(data);
@@ -40,6 +40,14 @@ int main() {
             cout << "cluster " << i << " point " << k << " = " << (*partitions[i][k]) << endl;
         }
     }
+
+    cout << endl << endl;
+    cout << "* Test KMeansTree" << endl;
+    KMeansTree<float> kmeanstree(n, D, 2, "");
+    cout << "Init kmeanstree" << endl;
+    kmeanstree.init(data);
+    cout << "Train kmeanstree" << endl;
+    kmeanstree.fit();
 
     return 0;
 }
