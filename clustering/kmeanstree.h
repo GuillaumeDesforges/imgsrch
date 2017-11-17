@@ -17,7 +17,8 @@ public:
 
     void fit();
 
-    const string getWord(const Point<T> point) const;
+    const string getWord(const Point<T> &point) const;
+    const bool isTrained() const;
 private:
     int n_clusters, depth;
     string prefix;
@@ -74,8 +75,20 @@ void KMeansTree<T>::fit() {
 }
 
 template<typename T>
-const string KMeansTree<T>::getWord(Point<T> point) const { // TODO
+const string KMeansTree<T>::getWord(const Point<T> &point) const { // TODO
     // should be recursive
     // BUT be careful not to go into subtrees not initiated !
-    return;
+    int cluster = kmeans.getCluster(point);
+    if(depth > 0) {
+        if(subtrees[cluster].isTrained()) {
+            return subtrees[cluster].getWord(point);
+        }
+    }
+    char c = (char) (((int) 'a') + cluster);
+    return prefix+c;
+}
+
+template<typename T>
+const bool KMeansTree<T>::isTrained() const {
+    return kmeans.isTrained();
 }

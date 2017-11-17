@@ -9,7 +9,7 @@ using namespace std;
 int main() {
     cout << "Init data" << endl;
     int n = 4;
-    int N = 10, D = 2;
+    int N = 50, D = 2;
     vector<Point<float>> data;
     for(int i = 0; i < N; i++) {
         Point<float> p(D);
@@ -48,6 +48,10 @@ int main() {
     kmeanstree.init(data);
     cout << "Train kmeanstree" << endl;
     kmeanstree.fit();
+
+    for(auto &point : data) {
+        cout << point << " at " << kmeanstree.getWord(point) << endl;
+    }
 
     return 0;
 }

@@ -15,7 +15,7 @@ public:
     KMeans(int n_clusters, int dimension);
 
     // Get closest cluster
-    int getCluster(const P &point);
+    int getCluster(const P &point) const;
 
     // Define training set
     void init(vector<P*> &data);
@@ -29,12 +29,15 @@ public:
 
     // Get training clusters
     vector<vector<P*>> getPartitions() const;
+
+    // Get if cluster was trained
+    const bool isTrained() const;
 private:
     int n_clusters, dimension;
     vector<P*> data;
     vector<P> means;
     vector<vector<P*>> partitions;
-    bool initiated = false;
+    bool initiated = false, trained = false;
 
     bool update();
     void computeMeans();
@@ -85,7 +88,7 @@ void KMeans<P, T>::init(vector<P> &data) {
 }
 
 template<typename P, typename T>
-int KMeans<P, T>::getCluster(const P &point) {
+int KMeans<P, T>::getCluster(const P &point) const {
     assert(initiated);
     // Compute distances between points and clusters
     vector<T> distances(n_clusters);
@@ -145,6 +148,7 @@ void KMeans<P, T>::fit() {
         changed = update();
         iteration++;
     }
+    trained = true;
 }
 
 template<typename P, typename T>
@@ -167,4 +171,9 @@ void KMeans<P, T>::computeMeans() {
         }
         means[i] /= partitions[i].size();
     }
+}
+
+template<typename P, typename T>
+const bool KMeans<P, T>::isTrained() const {
+    return trained;
 }
