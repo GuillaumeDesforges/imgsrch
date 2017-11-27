@@ -28,11 +28,12 @@ Pictures that are most likely "alike" are those sharing a lot of those features.
     * cmake
         * `sudo apt-get install cmake`
     * opencv & opencv_contrib
-        * `cd /tmp`
+        * `cd ~`
+        * `mkdir packages && cd packages`
         * `git clone https://github.com/opencv/opencv.git`
         * `git clone https://github.com/opencv/opencv_contrib.git`
         * `mkdir opencv_build && cd opencv_build`
-        * `cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D BUILD_NEW_PYTHON_SUPPORT=ON -D WITH_V4L=ON -D INSTALL_C_EXAMPLES=ON -D INSTALL_PYTHON_EXAMPLES=ON -D BUILD_EXAMPLES=ON -D WITH_GTK=ON -D WITH_OPENGL=ON -D OPENCV_EXTRA_MODULES_PATH=/tmp/opencv_contrib/modules /tmp/opencv`
+        * `cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_TBB=ON -D BUILD_NEW_PYTHON_SUPPORT=ON -D WITH_V4L=ON -D INSTALL_C_EXAMPLES=ON -D INSTALL_PYTHON_EXAMPLES=ON -D BUILD_EXAMPLES=ON -D WITH_GTK=ON -D WITH_OPENGL=ON -D OPENCV_EXTRA_MODULES_PATH=~/packages/opencv_contrib/modules ~/packages/opencv`
         * `make -j4`
         * `sudo make install`
 2. Clone repository
@@ -44,3 +45,4 @@ Pictures that are most likely "alike" are those sharing a lot of those features.
     * `cmake .. && make`
 4. Test
     * `./bin/clustering` should print a kmeans and kmeanstree 2D test
+    * `./bin/img img_test` should show a picture, press a key and it will show picture with SIFT keypoints, press key again to quit
