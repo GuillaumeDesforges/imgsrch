@@ -75,8 +75,8 @@ void KMeansTree<T>::fit() {
 }
 
 template<typename T>
-const string KMeansTree<T>::getWord(const Point<T> &point) const { // TODO
-    // should be recursive
+const string KMeansTree<T>::getWord(const Point<T> &point) const {
+    // recursive
     // BUT be careful not to go into subtrees not initiated !
     int cluster = kmeans.getCluster(point);
     if(depth > 0) {
