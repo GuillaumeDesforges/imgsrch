@@ -22,9 +22,11 @@ int main(int argc, char** argv )
     imshow("Display Image", image);
     waitKey(0);
 
-    Ptr<xfeatures2d::SiftFeatureDetector> detector_ptr = xfeatures2d::SiftFeatureDetector::create();
+    Ptr<Feature2D> f2d = xfeatures2d::SIFT::create();
     std::vector<cv::KeyPoint> keypoints;
-    detector_ptr->detect(image, keypoints);
+    Mat descriptors;
+    f2d->detect(image, keypoints);
+    f2d->compute(image, keypoints, descriptors );
 
     // Add results to image and save.
     Mat output;
