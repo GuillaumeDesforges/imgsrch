@@ -69,7 +69,7 @@ void KMeans<P, T>::init(vector<P*> &data) {
     std::mt19937 rng(rd());
     shuffle(indexes.begin(), indexes.end(), rng);
     for(int k = 0; k < n_clusters; k++) {
-        Point<T> p(dimension);
+        P p(dimension);
         p = *(data[indexes[k]]);
         means[k] = p;
     }

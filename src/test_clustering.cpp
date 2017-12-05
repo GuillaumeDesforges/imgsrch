@@ -2,9 +2,9 @@
 #include <vector>
 using namespace std;
 
-#include "point.h"
-#include "kmeans.h"
-#include "kmeanstree.h"
+#include "clustering/point.h"
+#include "clustering/kmeans.h"
+#include "clustering/kmeanstree.h"
 
 int main() {
     cout << "Init data" << endl;

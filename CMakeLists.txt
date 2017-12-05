@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.5)
+
 project(MOPSI)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -9,16 +11,16 @@ find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 file(GLOB clustering_SRC
-    "clustering/*.h"
-    "clustering/*.cpp"
+    "src/clustering/*.h"
+    "src/clustering/*.cpp"
 )
 
-add_executable(clustering ${clustering_SRC})
+add_executable(clustering src/test_clustering.cpp ${clustering_SRC})
 
 file(GLOB img_SRC
-    "img/*.h"
-    "img/*.cpp"
+    "src/img/*.h"
+    "src/img/*.cpp"
 )
 
-add_executable(img ${img_SRC})
+add_executable(img src/test_img.cpp ${clustering_SRC} ${img_SRC})
 target_link_libraries(img ${OpenCV_LIBS})
