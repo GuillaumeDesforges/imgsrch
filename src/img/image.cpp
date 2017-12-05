@@ -2,43 +2,50 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <vector>
 using namespace std;
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/xfeatures2d.hpp>
-using namespace cv;
 
 Image::Image(string path) : path(path) {
-    image = imread(path, 1);
+    image = cv::imread(path, 1);
     if (!image.data) {
         throw invalid_argument("path");
     }
 }
 
 void Image::display() {
-    namedWindow("Display Image", WINDOW_AUTOSIZE);
-    imshow("Display Image", image);
-    waitKey(0);
+    cv::namedWindow("Display Image", cv::WINDOW_AUTOSIZE);
+    cv::imshow("Display Image", image);
+    cv::waitKey(0);
 }
 
-void Image::detectKeyPoints(Ptr<Feature2D> &f2d) {
+void Image::detectKeyPoints(cv::Ptr<cv::Feature2D> &f2d) {
     f2d->detect(image, keypoints);
 }
 
 void Image::showKeyPoints() {
-    Mat output;
-    drawKeypoints(image, keypoints, output);
-    namedWindow("Display Image Keypoints", WINDOW_AUTOSIZE);
-    imshow("Display Image Keypoints", output);
-    waitKey(0);
+    cv::Mat output;
+    cv::drawKeypoints(image, keypoints, output);
+    cv::namedWindow("Display Image Keypoints", cv::WINDOW_AUTOSIZE);
+    cv::imshow("Display Image Keypoints", output);
+    cv::waitKey(0);
 }
 
-void Image::computeDescriptors(Ptr<Feature2D> &f2d) {
+void Image::computeDescriptors(cv::Ptr<cv::Feature2D> &f2d) {
     f2d->compute(image, keypoints, descriptors);
 }
 
-void Image::computeWords(KMeansTree<int> &kmeanstree) {
-    // TODO implement descriptors to words computation through trained kmeans
+void Image::computeWords(KMeansTree<double> &kmeanstree) {
+    for(int i = 0; i < descriptors.rows; i++) {
+        const double* Mi = descriptors.ptr<double>(i);
+        Point<double> point(128);
+        for(int j = 0; j < 128; j++) {
+            point[j] = Mi[j];
+        }
+        words.push_back(kmeanstree.getWord(point));
+    }
 }
 
 const vector<string>& Image::getWords() const {
