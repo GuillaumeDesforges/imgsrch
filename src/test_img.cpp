@@ -4,12 +4,13 @@
 #include <opencv2/xfeatures2d.hpp>
 
 #include "img/image.h"
+#include "clustering/kmeanstree.h"
 
 int main(int argc, char** argv )
 {
     if ( argc != 2 )
     {
-        printf("usage: DisplayImage.out <Image_Path>\n");
+        printf("usage: img <image path>\n");
         return -1;
     }
 
@@ -20,6 +21,13 @@ int main(int argc, char** argv )
     img.detectKeyPoints(f2d);
     img.computeDescriptors(f2d);
     img.showKeyPoints();
+
+    KMeansTree<double> kmeanstree(4, 128, 2, "");
+    vector<Point<double>> descriptors = img.getDescriptors();
+    kmeanstree.init(descriptors);
+    kmeanstree.fit();
+
+    cout << kmeanstree.getWord(descriptors[0]) << endl;
 
     return 0;
 }

@@ -34,16 +34,24 @@ void Image::showKeyPoints() {
 }
 
 void Image::computeDescriptors(cv::Ptr<cv::Feature2D> &f2d) {
-    f2d->compute(image, keypoints, descriptors);
-}
-
-void Image::computeWords(KMeansTree<double> &kmeanstree) {
-    for(int i = 0; i < descriptors.rows; i++) {
-        const double* Mi = descriptors.ptr<double>(i);
+    cv::Mat mat_descriptors;
+    f2d->compute(image, keypoints, mat_descriptors);
+    for(int i = 0; i < mat_descriptors.rows; i++) {
+        const double* Mi = mat_descriptors.ptr<double>(i);
         Point<double> point(128);
         for(int j = 0; j < 128; j++) {
             point[j] = Mi[j];
         }
+        descriptors.push_back(point);
+    }
+}
+
+vector<Point<double>> Image::getDescriptors() const {
+    return descriptors;
+}
+
+void Image::computeWords(KMeansTree<double> &kmeanstree) {
+    for(auto& point : descriptors) {
         words.push_back(kmeanstree.getWord(point));
     }
 }

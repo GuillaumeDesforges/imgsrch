@@ -14,12 +14,13 @@ public:
     void detectKeyPoints(cv::Ptr<cv::Feature2D> &f2d);
     void showKeyPoints();
     void computeDescriptors(cv::Ptr<cv::Feature2D> &f2d);
+    vector<Point<double>> getDescriptors() const;
     void computeWords(KMeansTree<double> &kmeanstree);
     const vector<string>& getWords() const;
 private:
     string path;
     cv::Mat image;
     std::vector<cv::KeyPoint> keypoints;
-    cv::Mat descriptors;
+    vector<Point<double>> descriptors;
     vector<string> words;
 };
