@@ -24,3 +24,6 @@ file(GLOB img_SRC
 
 add_executable(img src/test_img.cpp ${clustering_SRC} ${img_SRC})
 target_link_libraries(img ${OpenCV_LIBS})
+
+add_executable(index src/test_index.cpp ${clustering_SRC} ${img_SRC})
+target_link_libraries(index ${OpenCV_LIBS})
