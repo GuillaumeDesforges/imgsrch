@@ -7,7 +7,9 @@ set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
-find_package(OpenCV REQUIRED)
+find_package(Boost 1.40 COMPONENTS system filesystem REQUIRED)
+find_package(OpenCV)
+include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 file(GLOB clustering_SRC
@@ -26,4 +28,4 @@ add_executable(img src/test_img.cpp ${clustering_SRC} ${img_SRC})
 target_link_libraries(img ${OpenCV_LIBS})
 
 add_executable(index src/test_index.cpp ${clustering_SRC} ${img_SRC})
-target_link_libraries(index ${OpenCV_LIBS})
+target_link_libraries(index LINK_PUBLIC ${OpenCV_LIBS} ${Boost_LIBRARIES})

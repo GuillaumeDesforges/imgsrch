@@ -25,8 +25,10 @@ Pictures that are most likely "alike" are those sharing a lot of those features.
 ## Install
 
 1. Dependencies
-    * cmake
-        * `sudo apt-get install cmake`
+    * libboost
+        * `sudo apt-get install -y libboost-all-dev`
+    * cmake (>= 3.5)
+        * `sudo apt-get install -y cmake`
     * opencv & opencv_contrib
         * `cd ~`
         * `mkdir packages && cd packages`
