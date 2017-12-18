@@ -1,5 +1,7 @@
 #include "index.h"
 
+// from {(1,{bonjour, hello, ponts}) ,  (2, {allo, bonjour}) , (3,{ponts})...}
+// to {("bonjour", {1,2}) , ("allo", {2}) , ("helle",{1}), ("ponts", {1,3}) , ...}
 void Index::indexImages(map<int, Image*> &database){
     // Iterate database
     for(auto &entry : database) {

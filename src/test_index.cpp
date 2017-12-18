@@ -9,28 +9,7 @@
 #include "boost/filesystem.hpp"
 namespace fs = boost::filesystem;
 
-
-void create_database(string path_to_imagesFolder){
-  //map<int, Image*> database;
-  //int k=0;
-
-  fs::path path_to_imFolder(path_to_imagesFolder);
-  fs::directory_iterator end_iter;
-
-  typedef std::multimap<std::time_t, fs::path> result_set_t;
-  result_set_t result_set;
-
-  if ( fs::exists(path_to_imagesFolder) && fs::is_directory(path_to_imagesFolder)){
-    for( fs::directory_iterator dir_iter(path_to_imagesFolder) ; dir_iter != end_iter ; ++dir_iter){
-      if (fs::is_regular_file(dir_iter->status()) ){
-        result_set.insert(result_set_t::value_type(fs::last_write_time(dir_iter->path()), *dir_iter));
-      }
-    }
-  }
-  //Image * image(p);
-  //database.insert(pair<int,Image*>(k,image));
-}
-
+// Pour creer database = (1,{bonjour, hello, ponts}) ,  (2, {allo, bonjour}) , (3,{ponts})...}
 
 std::vector<std::string> get_file_list(const std::string& path)
 {
@@ -50,11 +29,22 @@ std::vector<std::string> get_file_list(const std::string& path)
     return m_file_list;
 }
 
+map<int,Image*> create_database(vector<string> file_list){
+  map<int,Image*> database;
+  for(int k=0; k<file_list.size();k++){
+    database.insert(pair<int,Image*>(k,new Image (file_list[k])));
+  }
+}
+
 int main(int argc, char** argv )
 {
-    auto test = get_file_list(".");
+    auto test = get_file_list("/1.jpg");
     for(auto& s : test) {
         cout << s << endl;
+        Image img(s);
+        img.display();
+        //click();
     }
+    create_database(test);
     return 0;
 }
