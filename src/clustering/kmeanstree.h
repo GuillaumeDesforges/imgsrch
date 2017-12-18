@@ -10,7 +10,7 @@ using namespace std;
 template<typename T>
 class KMeansTree {
 public:
-    KMeansTree(int n_clusters, int dimension, int depth, string prefix);
+    KMeansTree(int n_clusters, int dimension, int depth, string prefix = "");
 
     void init(vector<Point<T>*> &data);
     void init(vector<Point<T>> &data);
