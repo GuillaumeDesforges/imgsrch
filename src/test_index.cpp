@@ -32,10 +32,14 @@ map<int, Image*> create_database(vector<Image> &images) {
     return database;
 }
 
-int main(int argc, char** argv )
+int main(int argc, char** argv)
 {
+    string path = "../database/";
+    if(argc > 1) {
+        path = argv[1];
+    }
     // Load images path in directory
-    auto files_list = get_file_list("../database/");
+    auto files_list = get_file_list(path);
 
     // Load images
     vector<Image> images = load_multiple_images(files_list);
@@ -48,7 +52,6 @@ int main(int argc, char** argv )
         // image.showKeyPoints();
     }
 
-
     // Create and train KMeansTree
     KMeansTree<double> kmeanstree(4, 128, 5);
 
@@ -59,8 +62,9 @@ int main(int argc, char** argv )
             descriptors.push_back(descriptor);
         }
     }
-    kmeanstree.init(descriptors);
 
+    kmeanstree.addPoints(descriptors);
+    kmeanstree.init();
     kmeanstree.fit();
 
     // Put words to images

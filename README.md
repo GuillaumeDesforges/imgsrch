@@ -46,5 +46,6 @@ Pictures that are most likely "alike" are those sharing a lot of those features.
 3. Build
     * `cmake .. && make`
 4. Test
-    * `./bin/clustering` should print a kmeans and kmeanstree 2D test
-    * `./bin/img img_test` should show a picture, press a key and it will show picture with SIFT keypoints, press key again to quit
+    * `./clustering` should print a kmeans and kmeanstree 2D test
+    * `./img img_test` should show a picture, press a key and it will show picture with SIFT keypoints, press key again to quit
+    * `./index` should try to look for pictures in ../database/ and load its images, then train a kmeanstree based on the descriptors of the images, and finally compare images descriptors ressemblance with one of the image.

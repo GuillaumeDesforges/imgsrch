@@ -22,9 +22,10 @@ int main() {
     cout << "* Test KMeans" << endl;
     cout << "Init kmeans" << endl;
     KMeans<Point<float>, float> kmeans(n, D);
-    kmeans.init(data);
+    kmeans.addPoints(data);
 
     cout << "Train kmeans" << endl;
+    kmeans.init();
     kmeans.fit();
 
     cout << endl;
@@ -44,8 +45,9 @@ int main() {
     cout << endl << endl;
     cout << "* Test KMeansTree" << endl;
     KMeansTree<float> kmeanstree(n, D, 2, "");
+    kmeanstree.addPoints(data);
     cout << "Init kmeanstree" << endl;
-    kmeanstree.init(data);
+    kmeanstree.init();
     cout << "Train kmeanstree" << endl;
     kmeanstree.fit();
 

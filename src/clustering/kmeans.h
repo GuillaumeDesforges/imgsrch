@@ -17,11 +17,20 @@ public:
     // Get closest cluster
     int getCluster(const P &point) const;
 
-    // Define training set
-    void init(vector<P*> &data);
-    void init(vector<P> &data);
+    // Add points to kmeans (no fit)
+    void addPoint(P *point);
+    void addPoint(P &point);
+    void addPoints(vector<P*> &points);
+    void addPoints(vector<P> &points);
 
-    // Train (init() must be called before)
+    // Define training set (no fit)
+    void setPoints(vector<P*> &points);
+    void setPoints(vector<P> &points);
+
+    // Starting point before first fit
+    void init();
+
+    // Train
     void fit();
 
     // Get means of clusters
@@ -55,10 +64,61 @@ KMeans<P, T>::KMeans(int n_clusters, int dimension) {
 }
 
 template<typename P, typename T>
-void KMeans<P, T>::init(vector<P*> &data) {
-    assert(data.size() >= n_clusters);
-    this->data = data;
+void KMeans<P, T>::addPoint(P *point) {
+    data.push_back(point);
+}
 
+
+template<typename P, typename T>
+void KMeans<P, T>::addPoint(P &point) {
+    addPoint(&point);
+}
+
+template<typename P, typename T>
+void KMeans<P, T>::addPoints(vector<P*> &points) {
+    for(int k = 0; k < points.size(); k++) {
+        P* p = points[k];
+        addPoint(p);
+    }
+}
+
+template<typename P, typename T>
+void KMeans<P, T>::addPoints(vector<P> &points) {
+    for(int k = 0; k < points.size(); k++) {
+        P &p = points[k];
+        addPoint(p);
+    }
+}
+
+template<typename P, typename T>
+void KMeans<P, T>::setPoints(vector<P*> &points) {
+    data.clear();
+    addPoints(points);
+}
+
+template<typename P, typename T>
+void KMeans<P, T>::setPoints(vector<P> &points) {
+    data.clear();
+    addPoints(points);
+}
+
+template<typename P, typename T>
+int KMeans<P, T>::getCluster(const P &point) const {
+    assert(initiated);
+    // Compute distances between points and clusters
+    vector<T> distances(n_clusters);
+    for(int k = 0; k < n_clusters; k++) {
+        distances[k] = (point - means[k]).norm2();
+    }
+    // Get the index of the closest cluster
+    int best_cluster = min_element(distances.begin(), distances.end()) - distances.begin();
+    assert(0 <= best_cluster && best_cluster < n_clusters);
+    return best_cluster;
+}
+
+template<typename P, typename T>
+void KMeans<P, T>::init() {
+    assert(data.size() >= n_clusters);
     // Select random points
     // TODO improve kmeans init to select relevant starting points
     vector<int> indexes(data.size());
@@ -75,30 +135,6 @@ void KMeans<P, T>::init(vector<P*> &data) {
     }
     assert(means.size() == n_clusters);
     initiated = true;
-}
-
-template<typename P, typename T>
-void KMeans<P, T>::init(vector<P> &data) {
-    vector<P*> data_p;
-    for(int k = 0; k < data.size(); k++) {
-        P* p = &(data[k]);
-        data_p.push_back(p);
-    }
-    init(data_p);
-}
-
-template<typename P, typename T>
-int KMeans<P, T>::getCluster(const P &point) const {
-    assert(initiated);
-    // Compute distances between points and clusters
-    vector<T> distances(n_clusters);
-    for(int k = 0; k < n_clusters; k++) {
-        distances[k] = (point - means[k]).norm2();
-    }
-    // Get the index of the closest cluster
-    int best_cluster = min_element(distances.begin(), distances.end()) - distances.begin();
-    assert(0 <= best_cluster && best_cluster < n_clusters);
-    return best_cluster;
 }
 
 template<typename P, typename T>

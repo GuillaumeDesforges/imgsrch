@@ -12,9 +12,20 @@ class KMeansTree {
 public:
     KMeansTree(int n_clusters, int dimension, int depth, string prefix = "");
 
-    void init(vector<Point<T>*> &data);
-    void init(vector<Point<T>> &data);
+    // Add points as training set
+    void addPoint(Point<T>* point);
+    void addPoint(Point<T>& point);
+    void addPoints(vector<Point<T>*>& data);
+    void addPoints(vector<Point<T>>& data);
 
+    // Set training set
+    void setPoints(vector<Point<T>*>& data);
+    void setPoints(vector<Point<T>>& data);
+
+    // Starting point before first fit
+    void init();
+
+    // Train
     void fit();
 
     const string getWord(const Point<T> &point) const;
@@ -22,7 +33,6 @@ public:
 private:
     int n_clusters, depth;
     string prefix;
-    vector<Point<T>*> data;
     KMeans<Point<T>, T> kmeans;
     vector<KMeansTree<T>> subtrees;
 };
@@ -44,19 +54,38 @@ KMeansTree<T>::KMeansTree(int n_clusters, int dimension, int depth, string prefi
     }
 
 template<typename T>
-void KMeansTree<T>::init(vector<Point<T>*> &data) {
-    this->data = data;
-    kmeans.init(data);
+void KMeansTree<T>::addPoint(Point<T>* point) {
+    kmeans.addPoint(point);
 }
 
 template<typename T>
-void KMeansTree<T>::init(vector<Point<T>> &data) {
-    vector<Point<T>*> data_p;
-    for(int k = 0; k < data.size(); k++) {
-        Point<T>* p = &(data[k]);
-        data_p.push_back(p);
-    }
-    init(data_p);
+void KMeansTree<T>::addPoint(Point<T>& point) {
+    kmeans.addPoint(point);
+}
+
+template<typename T>
+void KMeansTree<T>::addPoints(vector<Point<T>*>& data) {
+    kmeans.addPoints(data);
+}
+
+template<typename T>
+void KMeansTree<T>::addPoints(vector<Point<T>>& data) {
+    kmeans.addPoints(data);
+}
+
+template<typename T>
+void KMeansTree<T>::setPoints(vector<Point<T>*>& data) {
+    kmeans.setPoints(data);
+}
+
+template<typename T>
+void KMeansTree<T>::setPoints(vector<Point<T>>& data) {
+    kmeans.setPoints(data);
+}
+
+template<typename T>
+void KMeansTree<T>::init() {
+    kmeans.init();
 }
 
 template<typename T>
@@ -66,7 +95,8 @@ void KMeansTree<T>::fit() {
         for(int i = 0; i < n_clusters; i++) {
             if(kmeans.getPartitions()[i].size() >= n_clusters) {
                 KMeansTree<T>& subtree = subtrees[i];
-                subtree.init(kmeans.getPartitions()[i]);
+                subtree.setPoints(kmeans.getPartitions()[i]);
+                subtree.init();
                 subtree.fit();
             }
         }

@@ -24,7 +24,8 @@ int main(int argc, char** argv )
 
     KMeansTree<double> kmeanstree(4, 128, 2, "");
     vector<Point<double>> descriptors = img.getDescriptors();
-    kmeanstree.init(descriptors);
+    kmeanstree.addPoints(descriptors);
+    kmeanstree.init();
     kmeanstree.fit();
 
     cout << kmeanstree.getWord(descriptors[0]) << endl;
