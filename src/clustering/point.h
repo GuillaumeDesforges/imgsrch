@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <cassert>
+#include <string>
 using namespace std;
 
 template<typename T>
@@ -149,16 +150,16 @@ const int Point<T>::getDimension() const {
 template<typename T>
 std::ostream& operator<<(ostream& stream, const Point<T>& point) {
     if(point.getDimension() == 0) {
-        stream << "(EMPTY)";
+        stream << string("(EMPTY)");
         return stream;
     }
-    stream << "(";
+    stream << string("(");
     for(int d = 0; d < point.getDimension(); d++) {
         stream << point[d];
         if(d+1 < point.getDimension()) {
-            stream << ", ";
+            stream << string(", ");
         }
     }
-    stream << ")";
+    stream << string(")");
     return stream;
 }

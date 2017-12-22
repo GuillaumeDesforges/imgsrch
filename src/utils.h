@@ -1,5 +1,11 @@
 #pragma once
 
+#include <cstdio>
+using namespace std;
+
+#include "boost/filesystem.hpp"
+namespace fs = boost::filesystem;
+
 std::vector<std::string> get_file_list(const std::string& path)
 {
     std::vector<std::string> m_file_list;

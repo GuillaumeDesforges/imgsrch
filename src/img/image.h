@@ -10,6 +10,7 @@ using namespace std;
 class Image {
 public:
     Image(string path);
+    string getPath();
     void display();
     void detectKeyPoints(cv::Ptr<cv::Feature2D> &f2d);
     void showKeyPoints();

@@ -15,6 +15,10 @@ Image::Image(string path) : path(path) {
     }
 }
 
+string Image::getPath() {
+    return path;
+}
+
 void Image::display() {
     cv::namedWindow("Display Image", cv::WINDOW_AUTOSIZE);
     cv::imshow("Display Image", image);
