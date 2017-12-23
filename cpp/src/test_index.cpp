@@ -22,19 +22,9 @@ vector<Image> load_multiple_images(vector<string> &file_list) {
     return images;
 }
 
-map<int, Image*> create_database(vector<Image> &images) {
-    map<int, Image*> database;
-    int k = 0;
-    for(auto &image : images){
-        database.insert(pair<int, Image*>(k, &image));
-        k++;
-    }
-    return database;
-}
-
 int main(int argc, char** argv)
 {
-    string path = "../database/";
+    string path = "../../database/";
     if(argc > 1) {
         path = argv[1];
     }
@@ -74,30 +64,12 @@ int main(int argc, char** argv)
 
     // Create index
     Index index;
-    // Create "database" to pass to index
-    map<int, Image*> database = create_database(images);
-    index.indexImages(database);
-    // Could be image per image :
-    /*
-        int image_id = 0;
-        for(auto& image : images) {
-            index.indexImage(image_id, image);
-            image_id++;
-        }
-    */
+    index.indexImages(images);
 
-    cout << "Test : votes for " << files_list[0] << endl;
-    map<int, int> votes = index.getVotes(images[0]);
-    int n_words = images[0].getWords().size();
-    map<int, double> scores;
-    for(auto& image_vote : votes) {
-        int id = image_vote.first;
-        double vote = image_vote.second;
-        double score = vote/n_words;
-        scores[id] = score;
-    }
-    for(int i = 0; i < images.size(); i++) {
-        cout << files_list[i] << " (" << images[i].getWords().size() << " words) => score = " << scores[i] << " ; votes = " << votes[i] << endl;
+    cout << "Test : votes for " << images[0].getPath() << endl;
+    map<string, double> scores = index.getScores(images[0]);
+    for(auto& entry : scores) {
+        cout << entry.first << " => score = " << entry.second << " ; votes = " << (entry.second * images[0].getDescriptors().size()) << endl;
     }
 
     return 0;

@@ -1,17 +1,20 @@
 #pragma once
 
+#include<Python.h>
+
 #include <string>
+#include <map>
 using namespace std;
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/xfeatures2d.hpp>
 
-#include "../src/utils.h"
+#include "../cpp/src/utils.h"
 
-#include "../src/clustering/point.h"
-#include "../src/clustering/kmeanstree.h"
-#include "../src/img/image.h"
-#include "../src/img/index.h"
+#include "../cpp/src/clustering/point.h"
+#include "../cpp/src/clustering/kmeanstree.h"
+#include "../cpp/src/img/image.h"
+#include "../cpp/src/img/index.h"
 
 
 class ImgSrch {
@@ -60,21 +63,15 @@ public:
             }
 
             // Create "database" to pass to index
-            map<int, Image*> database;
-            int k = 0;
-            for(auto &image : *images){
-                database.insert(pair<int, Image*>(k, &image));
-                k++;
-            }
             Index &idx = *index;
-            idx.indexImages(database);
+            idx.indexImages(*images);
         } catch(const std::exception& e) {
             return 1;
         }
         return 0;
     };
 
-    void votes(const char* path) {
+    map<string, double> computeLikelihoods(const char* path) {
         string p = string(path);
         Image inputImg(p);
         cv::Ptr<cv::Feature2D> f2d = cv::xfeatures2d::SIFT::create();
@@ -82,18 +79,8 @@ public:
         inputImg.computeDescriptors(f2d);
         inputImg.computeWords(*kmeanstree);
 
-        map<int, int> votes = index->getVotes(inputImg);
-        int n_words = inputImg.getWords().size();
-        map<int, double> scores;
-        for(auto& image_vote : votes) {
-            int id = image_vote.first;
-            double vote = image_vote.second;
-            double score = vote/n_words;
-            scores[id] = score;
-        }
-        for(int i = 0; i < images->size(); i++) {
-            cout << (*images)[i].getPath() << " (" << (*images)[i].getWords().size() << " words) => score = " << scores[i] << " ; votes = " << votes[i] << endl;
-        }
+        map<string, double> scores = index->getScores(inputImg);
+        return scores;
     }
 
     KMeansTree<double> *kmeanstree;
