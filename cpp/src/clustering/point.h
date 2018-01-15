@@ -11,6 +11,7 @@ class Point {
 public:
     Point(int dimension);
     Point(const Point<T> &other);
+    Point(string s);
 
     void operator=(const Point<T> &other);
 
@@ -46,6 +47,16 @@ template<typename T>
 Point<T>::Point(const Point<T> &other) {
     this->x = other.x;
     this->dimension = other.dimension;
+}
+
+template<typename T>
+Point<T>::Point(string s) {
+    stringstream ss(s);
+    T n;
+    while(ss >> n) {
+        x.push_back(n);
+    }
+    dimension = x.size();
 }
 
 template<typename T>
@@ -153,13 +164,13 @@ std::ostream& operator<<(ostream& stream, const Point<T>& point) {
         stream << string("(EMPTY)");
         return stream;
     }
-    stream << string("(");
+    // stream << string("(");
     for(int d = 0; d < point.getDimension(); d++) {
         stream << point[d];
         if(d+1 < point.getDimension()) {
-            stream << string(", ");
+            stream << string(" ");
         }
     }
-    stream << string(")");
+    // stream << string(")");
     return stream;
 }

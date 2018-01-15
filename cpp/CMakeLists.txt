@@ -15,6 +15,7 @@ file(GLOB clustering_SRC
 )
 
 add_executable(clustering src/test_clustering.cpp ${clustering_SRC})
+add_executable(serialize src/test_serialize.cpp ${clustering_SRC})
 
 file(GLOB img_SRC
     "src/img/*.h"
