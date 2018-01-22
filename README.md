@@ -29,6 +29,8 @@ Pictures that are most likely "alike" are those sharing a lot of those features.
         * `sudo apt-get install -y libboost-all-dev`
     * cmake (>= 3.5)
         * `sudo apt-get install -y cmake`
+    * doxygen
+        * `sudo apt-get install -y doxygen`
     * opencv & opencv_contrib
         * `cd ~`
         * `mkdir packages && cd packages`
@@ -45,7 +47,9 @@ Pictures that are most likely "alike" are those sharing a lot of those features.
     * `mkdir build && cd build`
 3. Build
     * `cmake .. && make`
+    * Build the doc : `make doc`
 4. Test
     * `./clustering` should print a kmeans and kmeanstree 2D test
     * `./img img_test` should show a picture, press a key and it will show picture with SIFT keypoints, press key again to quit
     * `./index` should try to look for pictures in ../database/ and load its images, then train a kmeanstree based on the descriptors of the images, and finally compare images descriptors ressemblance with one of the image.
+    * `./serialize` should train a KMeans, serialize its means, deserialize into another KMeans

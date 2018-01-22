@@ -1,0 +1,7 @@
+PROJECT_NAME           = "@CMAKE_PROJECT_NAME@"
+STRIP_FROM_PATH        = @PROJECT_SOURCE_DIR@
+INPUT                  = @PROJECT_SOURCE_DIR@/src/
+OUTPUT_DIRECTORY       = @CMAKE_CURRENT_BINARY_DIR@/doc/
+FILE_PATTERNS          = *.h \
+                         *.cpp
+RECURSIVE              = YES
