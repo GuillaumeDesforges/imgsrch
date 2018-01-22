@@ -6,6 +6,10 @@
 #include <string>
 using namespace std;
 
+/**
+    \class Point
+    \brief Usual representation of a point in space T^d
+**/
 template<typename T>
 class Point {
 public:

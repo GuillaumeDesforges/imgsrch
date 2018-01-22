@@ -54,7 +54,7 @@ vector<Point<double>> Image::getDescriptors() const {
     return descriptors;
 }
 
-void Image::computeWords(KMeansTree<double> &kmeanstree) {
+void Image::computeWords(KMeansTree<Point<double>, double> &kmeanstree) {
     for(auto& point : descriptors) {
         words.push_back(kmeanstree.getWord(point));
     }

@@ -43,7 +43,7 @@ int main(int argc, char** argv)
     }
 
     // Create and train KMeansTree
-    KMeansTree<double> kmeanstree(4, 128, 5);
+    KMeansTree<Point<double>, double> kmeanstree(4, 128, 5);
 
     // Agregate all descriptors in all images to train KMeansTree
     vector<Point<double>> descriptors;

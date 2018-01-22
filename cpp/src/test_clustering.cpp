@@ -44,7 +44,7 @@ int main() {
 
     cout << endl << endl;
     cout << "* Test KMeansTree" << endl;
-    KMeansTree<float> kmeanstree(n, D, 2, "");
+    KMeansTree<Point<float>, float> kmeanstree(n, D, 2, "");
     kmeanstree.addPoints(data);
     cout << "Init kmeanstree" << endl;
     kmeanstree.init();
