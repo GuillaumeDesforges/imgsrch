@@ -44,7 +44,7 @@ Pictures that are most likely "alike" are those sharing a lot of those features.
     * `cd ~ && mkdir projects && cd projects`
     * `git clone https://github.com/GuillaumeDesforges/imgsrch`
     * `cd imgsrch`
-    * `mkdir build && cd build`
+    * `mkdir cpp/build && cd cpp/build`
 3. Build
     * `cmake .. && make`
     * Build the doc : `make doc`
