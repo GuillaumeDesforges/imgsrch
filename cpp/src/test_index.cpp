@@ -28,6 +28,19 @@ int main(int argc, char** argv)
     if(argc > 1) {
         path = argv[1];
     }
+
+    //**** TEST : On verifie si l'adresse de la database est correcte ********
+    // FILE * fichier = fopen("..\\..\\database\\", "r+");
+    // if (fichier == NULL){
+    //   // Le fichier n'existe pas
+    //   cout<<" FATAL ERROR : The given path doesn't exist."<<endl;
+    // }
+    // else {
+    //   // Le fichier existe et on le referme
+    //   fclose(fichier);
+    // }
+    //*************************************************************************
+
     // Load images path in directory
     auto files_list = get_file_list(path);
 
@@ -56,6 +69,25 @@ int main(int argc, char** argv)
     kmeanstree.addPoints(descriptors);
     kmeanstree.init();
     kmeanstree.fit();
+
+    // ********** TEST ***********************
+    // a verifier
+    for(int k=0; k<10; k++){
+      int r=rand()%(descriptors.size());
+      Point<double> point_to_test= descriptors[r];
+      vector<Point<double> > clusters=kmeanstree.getCluster();
+      vector<Point<double> > means=kmeanstree.getMeans();
+      int cluster_to_test=clusters(point_to_test);
+      Point<double> mean_to_test=means[cluster_to_test];
+      double distance_to_test=(point_to_test - mean_to_test).norm2();
+      for(int p=0; p<clusters.size();p++){
+        double distance=(point_to_test - means[p]).norm2();
+        if (distance<distance_to_test){
+          cout<< "Clusterization error !";
+        }
+      }
+    }
+    // ************************************
 
     // Put words to images
     for(auto& image : images) {

@@ -41,6 +41,9 @@ map<string, double> Index::getScores(const Image &image) {
     }
     for(auto& entry : scores) {
         entry.second /= image.getDescriptors().size();
+        // ************** TEST ****************
+        assert (entry.second>=0 && entry.second <=1);
+        // ************************************
     }
     return scores;
 }
