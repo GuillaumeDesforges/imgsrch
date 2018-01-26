@@ -7,6 +7,10 @@ using namespace std;
 
 #include "../clustering/kmeanstree.h"
 
+/**
+    \class Image
+    \brief Usual representation of a point in space T^d
+**/
 class Image {
 public:
     Image(string path);

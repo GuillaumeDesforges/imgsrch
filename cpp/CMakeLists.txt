@@ -4,6 +4,8 @@ project(MOPSI)
 
 set(CMAKE_CXX_STANDARD 14)
 
+# ============= Executable
+
 find_package(Boost 1.40 COMPONENTS system filesystem REQUIRED)
 find_package(OpenCV)
 include_directories(${Boost_INCLUDE_DIRS})
@@ -28,6 +30,8 @@ target_link_libraries(img ${OpenCV_LIBS})
 add_executable(index src/test_index.cpp ${clustering_SRC} ${img_SRC})
 target_link_libraries(index LINK_PUBLIC ${OpenCV_LIBS} ${Boost_LIBRARIES})
 
+# ============= Documentation
+
 find_package(Doxygen)
 if(NOT DOXYGEN_FOUND)
    message(FATAL_ERROR "Doxygen is needed to build the documentation.")
@@ -43,3 +47,12 @@ add_custom_target(doc
    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
    COMMENT "Generating API documentation with Doxygen"
    VERBATIM)
+
+# ============= Unit test
+
+find_package(CxxTest)
+if(CXXTEST_FOUND)
+    include_directories(${CXXTEST_INCLUDE_DIR})
+    enable_testing()
+    CXXTEST_ADD_TEST(test_point test_point.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/clustering/point.unittest.h)
+endif()

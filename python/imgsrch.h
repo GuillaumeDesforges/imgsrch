@@ -20,7 +20,7 @@ using namespace std;
 class ImgSrch {
 public:
     ImgSrch() {
-        kmeanstree = new KMeansTree<double>(4, 128, 2);
+        kmeanstree = new KMeansTree<Point<double>, double>(4, 128, 2);
         images = new std::vector<Image>();
         index = new Index();
     }
@@ -83,7 +83,7 @@ public:
         return scores;
     }
 
-    KMeansTree<double> *kmeanstree;
+    KMeansTree<Point<double>, double> *kmeanstree;
     vector<Image> *images;
     Index *index;
 };

@@ -2,6 +2,7 @@
 **/build/
 **/__pycache__/
 **/database/
+**/database-unload/
 
 *.gch
 *.swp

@@ -43,13 +43,13 @@ int main() {
     }
 
     cout << endl << endl;
-    
+
     cout << "Serialize" << endl;
     string kmeans_out = kmeans.serialize();
     cout << kmeans_out << endl;
 
     KMeans<Point<float>, float> kmeans1(kmeans_out);
-    
+
     cout << endl;
     cout << "Results" << endl;
     vector<Point<float>> means1 = kmeans1.getMeans();

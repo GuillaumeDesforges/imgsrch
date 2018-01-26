@@ -10,6 +10,10 @@
 #include <sstream>
 using namespace std;
 
+/**
+    \class KMeans
+    \brief Class that holds the algorithm for vector of type P<T>, P structured as Point
+**/
 template<typename P, typename T>
 class KMeans {
 public:

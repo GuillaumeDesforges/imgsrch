@@ -7,6 +7,10 @@ using namespace std;
 #include "kmeans.h"
 #include "point.h"
 
+/**
+    \class KMeansTree
+    \brief Decision tree with KMeans as decision nodes
+**/
 template<typename P, typename T>
 class KMeansTree {
 public:
