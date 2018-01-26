@@ -16,18 +16,18 @@ file(GLOB clustering_SRC
     "src/clustering/*.cpp"
 )
 
-add_executable(clustering src/test_clustering.cpp ${clustering_SRC})
-add_executable(serialize src/test_serialize.cpp ${clustering_SRC})
+add_executable(clustering src/demo_clustering.cpp ${clustering_SRC})
+add_executable(serialize src/demo_serialize.cpp ${clustering_SRC})
 
 file(GLOB img_SRC
     "src/img/*.h"
     "src/img/*.cpp"
 )
 
-add_executable(img src/test_img.cpp ${clustering_SRC} ${img_SRC})
+add_executable(img src/demo_img.cpp ${clustering_SRC} ${img_SRC})
 target_link_libraries(img ${OpenCV_LIBS})
 
-add_executable(index src/test_index.cpp ${clustering_SRC} ${img_SRC})
+add_executable(index src/demo_index.cpp ${clustering_SRC} ${img_SRC})
 target_link_libraries(index LINK_PUBLIC ${OpenCV_LIBS} ${Boost_LIBRARIES})
 
 # ============= Documentation
