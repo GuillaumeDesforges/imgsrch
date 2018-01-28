@@ -75,8 +75,10 @@ int main(int argc, char** argv)
     for(int k=0; k<10; k++){
       int r=rand()%(descriptors.size());
       Point<double> point_to_test= descriptors[r];
-      vector<Point<double> > clusters=kmeanstree.getCluster();
+
+      vector<Point<double> > clusters=kmeanstree.getClusters();
       vector<Point<double> > means=kmeanstree.getMeans();
+
       int cluster_to_test=clusters(point_to_test);
       Point<double> mean_to_test=means[cluster_to_test];
       double distance_to_test=(point_to_test - mean_to_test).norm2();
