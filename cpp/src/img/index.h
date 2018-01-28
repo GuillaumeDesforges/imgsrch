@@ -14,7 +14,8 @@ public:
     void indexImage(Image &image);
     void indexImages(vector<Image>& images);
     map<string, double> getScores(const Image &image);
+    set<string> getImagesPathWithWord(string word);
+    set<string> getPossibleWords();
 private:
     map<string, set<string>> index;
-    set<string> getImagesPathWithWord(string word);
 };

@@ -50,14 +50,21 @@ void Image::computeDescriptors(cv::Ptr<cv::Feature2D> &f2d) {
     }
 }
 
+vector<cv::KeyPoint> Image::getKeyPoints() const {
+    return keypoints;
+}
+
 vector<Point<double>> Image::getDescriptors() const {
     return descriptors;
 }
 
 void Image::computeWords(KMeansTree<Point<double>, double> &kmeanstree) {
+    int i = 0;
     for(auto& point : descriptors) {
         words.push_back(kmeanstree.getWord(point));
+        // cout << "\r" << i++ << flush;
     }
+    // cout << endl;
 }
 
 const vector<string>& Image::getWords() const {
