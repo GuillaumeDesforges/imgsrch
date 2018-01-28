@@ -11,8 +11,8 @@
 %include "std_string.i"
 
 namespace std {
-    %template(map_scores) map<string, double>;
-    %template(set_string) set<string>;
+    %template() map<string, double>;
+    %template() set<string>;
 }
 
 %include "imgsrch.h"

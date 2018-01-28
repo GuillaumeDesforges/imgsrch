@@ -40,7 +40,7 @@ bidiiter random_unique(bidiiter begin, bidiiter end, size_t num_random) {
 
 int main(int argc, char** argv)
 {
-    string path = "../../database/";
+    string path = "../../demo/img/";
     if(argc > 1) {
         path = argv[1];
     }

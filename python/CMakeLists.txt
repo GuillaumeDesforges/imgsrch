@@ -8,7 +8,7 @@ INCLUDE(${SWIG_USE_FILE})
 FIND_PACKAGE(PythonLibs 3 REQUIRED)
 INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
 
-find_package(Boost 1.40 COMPONENTS system filesystem REQUIRED)
+find_package(Boost 1.40 COMPONENTS system filesystem serialization REQUIRED)
 find_package(OpenCV)
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${OpenCV_INCLUDE_DIRS})

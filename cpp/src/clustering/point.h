@@ -6,6 +6,8 @@
 #include <string>
 using namespace std;
 
+#include <boost/serialization/vector.hpp>
+
 /**
     \class Point
     \brief Usual representation of a point in space T^d
@@ -13,9 +15,9 @@ using namespace std;
 template<typename T>
 class Point {
 public:
+    Point() {}
     Point(int dimension);
     Point(const Point<T> &other);
-    Point(string s);
 
     void operator=(const Point<T> &other);
 
@@ -36,6 +38,12 @@ public:
 
     const int getDimension() const;
 private:
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version) {
+        ar & dimension;
+        ar & x;
+    }
     vector<T> x;
     int dimension;
 };
@@ -51,16 +59,6 @@ template<typename T>
 Point<T>::Point(const Point<T> &other) {
     this->x = other.x;
     this->dimension = other.dimension;
-}
-
-template<typename T>
-Point<T>::Point(string s) {
-    stringstream ss(s);
-    T n;
-    while(ss >> n) {
-        x.push_back(n);
-    }
-    dimension = x.size();
 }
 
 template<typename T>

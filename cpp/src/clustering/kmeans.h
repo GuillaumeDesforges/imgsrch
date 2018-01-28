@@ -10,6 +10,8 @@
 #include <sstream>
 using namespace std;
 
+#include <boost/serialization/vector.hpp>
+
 /**
     \class KMeans
     \brief Class that holds the algorithm for vector of type P<T>, P structured as Point
@@ -18,8 +20,8 @@ template<typename P, typename T>
 class KMeans {
 public:
     // Constructor
+    KMeans() {}
     KMeans(int n_clusters, int dimension);
-    KMeans(string s);
 
     // Get closest cluster
     int getCluster(const P &point) const;
@@ -46,12 +48,19 @@ public:
     // Get training clusters
     vector<vector<P*>> getPartitions() const;
 
-    // Serialize
-    string serialize();
-
     // Get if cluster was trained
     const bool isTrained() const;
 private:
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version) {
+        ar & n_clusters;
+        ar & dimension;
+        ar & initiated;
+        ar & trained;
+        ar & means;
+    }
+
     int n_clusters, dimension;
     vector<P*> data;
     vector<P> means;
@@ -71,25 +80,6 @@ KMeans<P, T>::KMeans(int n_clusters, int dimension) {
     for(int i = 0; i < n_clusters; i++) {
         means.push_back(P(dimension));
     }
-}
-
-template<typename P, typename T>
-KMeans<P, T>::KMeans(string s) {
-    stringstream ss(s);
-    string s0;
-    getline(ss, s0);
-    stringstream ss0(s0);
-    ss0 >> n_clusters >> dimension;
-    means = vector<P>();
-    string s_i;
-    for(int i_cluster = 0; i_cluster < n_clusters; i_cluster++) {
-        getline(ss, s_i);
-        P p_i(s_i);
-        assert(p_i.getDimension() == dimension);
-        means.push_back(p_i);
-    }
-    initiated = true;
-    trained = true;
 }
 
 template<typename P, typename T>
@@ -236,17 +226,6 @@ void KMeans<P, T>::computeMeans() {
         }
         means[i] /= partitions[i].size();
     }
-}
-
-template<typename P, typename T>
-string KMeans<P, T>::serialize() {
-    stringstream ss;
-    ss << n_clusters << " " << dimension << endl;
-    for(auto& mean : means) {
-        ss << mean << endl;
-    }
-    string o = ss.str();
-    return o;
 }
 
 template<typename P, typename T>

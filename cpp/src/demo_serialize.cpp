@@ -1,10 +1,15 @@
 #include <iostream>
 #include <vector>
+#include <iomanip>
+#include <fstream>
 using namespace std;
 
 #include "clustering/point.h"
 #include "clustering/kmeans.h"
 #include "clustering/kmeanstree.h"
+
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 
 int main() {
    cout << "Init data" << endl;
@@ -45,10 +50,19 @@ int main() {
     cout << endl << endl;
 
     cout << "Serialize" << endl;
-    string kmeans_out = kmeans.serialize();
-    cout << kmeans_out << endl;
+    {
+        std::ofstream ofs("kmeans.txt");
+        boost::archive::text_oarchive oa(ofs);
+        oa << kmeans;
+    }
 
-    KMeans<Point<float>, float> kmeans1(kmeans_out);
+    cout << "Deserialize" << endl;
+    KMeans<Point<float>, float> kmeans1(0, 0);
+    {
+        std::ifstream ifs("kmeans.txt");
+        boost::archive::text_iarchive ia(ifs);
+        ia >> kmeans1;
+    }
 
     cout << endl;
     cout << "Results" << endl;
@@ -57,12 +71,16 @@ int main() {
         cout << "cluster " << i << " = " << means1[i] << endl;
     }
     cout << endl;
-    // vector<vector<Point<float>*>> partitions1 = kmeans1.getPartitions();
-    // for(int i = 0; i < n; i++) {
-    //     for(int k = 0; k < partitions1[i].size(); k++) {
-    //         cout << "cluster " << i << " point " << k << " = " << (*partitions1[i][k]) << endl;
-    //     }
-    // }
+    
+    // cout << "* Test KMeansTree" << endl;
+    // KMeansTree<Point<float>, float> kmeanstree(n, D, 2, "");
+    // kmeanstree.addPoints(data);
+    // cout << "Init kmeanstree" << endl;
+    // kmeanstree.init();
+    // cout << "Train kmeanstree" << endl;
+    // kmeanstree.fit();
+    // cout << endl;
+    // cout << kmeanstree;
 
     return 0;
 }

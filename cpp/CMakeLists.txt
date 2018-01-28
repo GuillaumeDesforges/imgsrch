@@ -6,10 +6,11 @@ set(CMAKE_CXX_STANDARD 14)
 
 # ============= Executable
 
-find_package(Boost 1.40 COMPONENTS system filesystem REQUIRED)
+find_package(Boost REQUIRED system filesystem serialization)
 find_package(OpenCV)
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${OpenCV_INCLUDE_DIRS})
+link_directories("${Boost_LIBRARY_DIRS}")
 
 file(GLOB clustering_SRC
     "src/clustering/*.h"
@@ -17,7 +18,10 @@ file(GLOB clustering_SRC
 )
 
 add_executable(clustering src/demo_clustering.cpp ${clustering_SRC})
+target_link_libraries(clustering LINK_PUBLIC ${Boost_LIBRARIES})
+
 add_executable(serialize src/demo_serialize.cpp ${clustering_SRC})
+target_link_libraries(serialize LINK_PUBLIC ${Boost_LIBRARIES})
 
 file(GLOB img_SRC
     "src/img/*.h"
@@ -25,7 +29,7 @@ file(GLOB img_SRC
 )
 
 add_executable(img src/demo_img.cpp ${clustering_SRC} ${img_SRC})
-target_link_libraries(img ${OpenCV_LIBS})
+target_link_libraries(img LINK_PUBLIC ${OpenCV_LIBS} ${Boost_LIBRARIES})
 
 add_executable(index src/demo_index.cpp ${clustering_SRC} ${img_SRC})
 target_link_libraries(index LINK_PUBLIC ${OpenCV_LIBS} ${Boost_LIBRARIES})

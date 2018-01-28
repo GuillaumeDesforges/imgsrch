@@ -7,6 +7,8 @@ using namespace std;
 #include "kmeans.h"
 #include "point.h"
 
+#include <boost/serialization/vector.hpp>
+
 /**
     \class KMeansTree
     \brief Decision tree with KMeans as decision nodes
@@ -14,6 +16,7 @@ using namespace std;
 template<typename P, typename T>
 class KMeansTree {
 public:
+    KMeansTree() {}
     KMeansTree(int n_clusters, int dimension, int depth, string prefix = "");
 
     // Add points as training set
@@ -35,6 +38,14 @@ public:
     const string getWord(const P &point) const;
     const bool isTrained() const;
 private:
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version) {
+        ar & n_clusters;
+        ar & depth;
+        ar & kmeans;
+        ar & subtrees;
+    }
     int n_clusters, depth;
     string prefix;
     KMeans<P, T> kmeans;
@@ -46,16 +57,15 @@ KMeansTree<P, T>::KMeansTree(int n_clusters, int dimension, int depth, string pr
     n_clusters(n_clusters),
     depth(depth),
     prefix(prefix),
-    kmeans(KMeans<P, T>(n_clusters, dimension))
-    {
-        if(depth > 0) {
-            for(int i = 0; i < n_clusters; i++) {
-                char c = (char) (((int) 'a') + i);
-                KMeansTree<P, T> subtree(n_clusters, dimension, depth-1, prefix+c);
-                subtrees.push_back(subtree);
-            }
+    kmeans(KMeans<P, T>(n_clusters, dimension)) {
+    if(depth > 0) {
+        for(int i = 0; i < n_clusters; i++) {
+            char c = (char) (((int) 'a') + i);
+            KMeansTree<P, T> subtree(n_clusters, dimension, depth-1, prefix+c);
+            subtrees.push_back(subtree);
         }
     }
+}
 
 template<typename P, typename T>
 void KMeansTree<P, T>::addPoint(P* point) {
