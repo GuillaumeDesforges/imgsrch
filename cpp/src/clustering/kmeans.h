@@ -60,6 +60,8 @@ private:
 
     bool update();
     void computeMeans();
+
+    int iterations = 0;
 };
 
 template<typename P, typename T>
@@ -94,6 +96,11 @@ KMeans<P, T>::KMeans(string s) {
 
 template<typename P, typename T>
 void KMeans<P, T>::addPoint(P *point) {
+    if((*point).getDimension() != dimension) {
+        stringstream ss;
+        ss << "Tried to insert Point of dimension " << (*point).getDimension() << " in KMeans of dimension " << dimension;
+        throw ss.str();
+    }
     data.push_back(point);
 }
 
@@ -164,6 +171,8 @@ void KMeans<P, T>::init() {
     }
     assert(means.size() == n_clusters);
     initiated = true;
+
+    iterations = 0;
 }
 
 template<typename P, typename T>
@@ -209,9 +218,13 @@ void KMeans<P, T>::fit() {
     bool changed = true;
     int iteration = 0;
     while (changed) {
-        // cout << "Iteration " << iteration << endl;
         changed = update();
+        // Local iterations
+        // cout << "Iteration " << iteration << endl;
         iteration++;
+        // Global iterations
+        // cout << "Global iteration " << iterations << endl;
+        iterations++;
     }
     trained = true;
 }
