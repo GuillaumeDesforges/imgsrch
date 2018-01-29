@@ -51,6 +51,8 @@ public:
 
     // Get if cluster was trained
     const bool isTrained() const;
+    //Get if cluster vas initiated
+    const bool isInit() const;
 private:
     int n_clusters, dimension;
     vector<P*> data;
@@ -169,8 +171,8 @@ void KMeans<P, T>::init() {
         p = *(data[indexes[k]]);
         means[k] = p;
     }
-    assert(means.size() == n_clusters);
-    initiated = true;
+   assert(means.size() == n_clusters);
+   initiated = true;
 
     iterations = 0;
 }
@@ -265,4 +267,9 @@ string KMeans<P, T>::serialize() {
 template<typename P, typename T>
 const bool KMeans<P, T>::isTrained() const {
     return trained;
+}
+
+template<typename P, typename T>
+const bool KMeans<P, T>::isInit() const {
+    return initiated;
 }
