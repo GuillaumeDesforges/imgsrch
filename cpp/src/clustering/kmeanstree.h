@@ -41,10 +41,10 @@ private:
     friend class boost::serialization::access;
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version) {
-        ar & n_clusters;
-        ar & depth;
-        ar & kmeans;
-        ar & subtrees;
+        ar & BOOST_SERIALIZATION_NVP(n_clusters);
+        ar & BOOST_SERIALIZATION_NVP(depth);
+        ar & BOOST_SERIALIZATION_NVP(kmeans);
+        ar & BOOST_SERIALIZATION_NVP(subtrees);
     }
     int n_clusters, depth;
     string prefix;

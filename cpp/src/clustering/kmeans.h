@@ -54,11 +54,11 @@ private:
     friend class boost::serialization::access;
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version) {
-        ar & n_clusters;
-        ar & dimension;
-        ar & initiated;
-        ar & trained;
-        ar & means;
+        ar & BOOST_SERIALIZATION_NVP(n_clusters);
+        ar & BOOST_SERIALIZATION_NVP(dimension);
+        ar & BOOST_SERIALIZATION_NVP(initiated);
+        ar & BOOST_SERIALIZATION_NVP(trained);
+        ar & BOOST_SERIALIZATION_NVP(means);
     }
 
     int n_clusters, dimension;
@@ -123,7 +123,12 @@ void KMeans<P, T>::setPoints(vector<P> &points) {
 
 template<typename P, typename T>
 int KMeans<P, T>::getCluster(const P &point) const {
-    assert(initiated);
+    // cout << "getCluster initiated " << initiated << endl;
+    // cout << "getCluster means " << means.size() << endl;
+    if(!initiated) {
+        cout << "KMeans has not been initiated" << endl;
+        throw string("KMeans has not been initiated");
+    }
     // Compute distances between points and clusters
     vector<T> distances(n_clusters);
     for(int k = 0; k < n_clusters; k++) {
@@ -137,7 +142,9 @@ int KMeans<P, T>::getCluster(const P &point) const {
 
 template<typename P, typename T>
 void KMeans<P, T>::init() {
-    assert(data.size() >= n_clusters);
+    if(data.size() < n_clusters) {
+        throw string("Not enough data to train KMeans");
+    }
     // Select random points
     // TODO improve kmeans init to select relevant starting points
     vector<int> indexes(data.size());

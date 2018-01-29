@@ -17,14 +17,14 @@ using namespace std;
 #include "../cpp/src/img/image.h"
 #include "../cpp/src/img/index.h"
 
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/xml_iarchive.hpp>
+#include <boost/archive/xml_oarchive.hpp>
 
 typedef Point<double> Descriptor;
 
-const int kmeansClusterNumber = 5;
-const int kmeanstreeDepth = 4;
-const int kmeanstreeTrainingSampleSize = 50000;
+const int kmeansClusterNumberDefault = 5;
+const int kmeanstreeDepthDefault = 4;
+const int kmeanstreeTrainingSampleSizeDefault = 50000;
 
 template<class bidiiter>
 bidiiter random_unique(bidiiter begin, bidiiter end, size_t num_random) {
@@ -39,113 +39,145 @@ bidiiter random_unique(bidiiter begin, bidiiter end, size_t num_random) {
     return begin;
 }
 
-class ImgSrch {
-public:
-    ImgSrch() {
-        kmeanstree = new KMeansTree<Descriptor, double>(kmeansClusterNumber, 128, kmeanstreeDepth);
-        index = new Index();
-    }
+class Engine{
+    public:
+        Engine(int kmeansClusterNumber = kmeansClusterNumberDefault, int kmeanstreeDepth = kmeanstreeDepthDefault) 
+        : kmeanstree(kmeansClusterNumber, 128, kmeanstreeDepth) {
 
-    ~ImgSrch() {
-        delete kmeanstree;
-        delete index;
-    }
+        }
 
-    int train(const char* path) {
-        try {
-            cout << endl;
-            // Load file list
-            // cout << "Loading file list" << endl;
-            auto files_list = get_file_list(path);
-            
-            // Create SIFT instance
-            // cout << "Creating SIFT instance" << endl;
-            cv::Ptr<cv::Feature2D> f2d = cv::xfeatures2d::SIFT::create();
+        bool train(const char* path, int kmeanstreeTrainingSampleSize = kmeanstreeTrainingSampleSizeDefault) {
+            try {
+                // Load file list
+                // cout << "Loading file list" << endl;
+                auto files_list = get_file_list(path);
 
-            // Creating data for training
-            cout << "Creating training dataset for KMeansTree" << endl;
-            int sampleSizePerImage = kmeanstreeTrainingSampleSize / files_list.size();
-            vector<Descriptor> trainingDescriptors;
-            for(auto &img_path : files_list) {
-                cout << "Image : " << img_path << endl;
-                Image image(img_path);
-                // cout << "Computing image descriptors" << endl;
-                image.detectKeyPoints(f2d);
-                image.computeDescriptors(f2d);
-                vector<Descriptor> imageDescriptors = image.getDescriptors();
-                random_unique(imageDescriptors.begin(), imageDescriptors.end(), sampleSizePerImage);
-                // cout << "Sampling" << endl;
-                for(int i = 0; i < sampleSizePerImage; i++) {
-                    Descriptor descriptor = imageDescriptors[i];
-                    trainingDescriptors.push_back(descriptor);
+                // Create SIFT instance
+                // cout << "Creating SIFT instance" << endl;
+                cv::Ptr<cv::Feature2D> f2d = cv::xfeatures2d::SIFT::create();
+
+                // Creating data for training
+                cout << "Creating training dataset for KMeansTree" << endl;
+                int sampleSizePerImage = kmeanstreeTrainingSampleSize / files_list.size();
+                vector<Descriptor> trainingDescriptors;
+                for(auto &img_path : files_list) {
+                    cout << "Image : " << img_path << endl;
+                    Image image(img_path);
+                    // cout << "Computing image descriptors" << endl;
+                    image.detectKeyPoints(f2d);
+                    image.computeDescriptors(f2d);
+                    vector<Descriptor> imageDescriptors = image.getDescriptors();
+                    random_unique(imageDescriptors.begin(), imageDescriptors.end(), sampleSizePerImage);
+                    // cout << "Sampling" << endl;
+                    for(int i = 0; i < sampleSizePerImage; i++) {
+                        Descriptor descriptor = imageDescriptors[i];
+                        trainingDescriptors.push_back(descriptor);
+                    }
                 }
+
+                // Init and train KMeansTree
+                // cout << "Adding training points" << endl;
+                kmeanstree.addPoints(trainingDescriptors);
+                kmeanstree.init();
+                cout << "Training" << endl;
+                kmeanstree.fit();
+            } catch(const std::exception& e) {
+                cout << "Failed to train engine, an exception has occured." << endl;
+                cerr << e.what() << endl;
+                return false;
             }
+            return true;
+        };
 
-            // Init and train KMeansTree
-            // cout << "Adding training points" << endl;
-            kmeanstree->addPoints(trainingDescriptors);
-            kmeanstree->init();
-            cout << "Training" << endl;
-            kmeanstree->fit();
-        } catch(const std::exception& e) {
-            return 1;
-        }
-        return 0;
-    };
+        bool indexDirectory(const char* path) {
+            try {
+                // Load file list
+                cout << "Loading file list" << endl;
+                auto files_list = get_file_list(path);
 
-    int indexDirectory(const char* path) {
-        try {
-            cout << endl;
-            // Load file list
-            cout << "Loading file list" << endl;
-            auto files_list = get_file_list(path);
-            
-            // Create SIFT instance
-            cout << "Creating SIFT instance" << endl;
-            cv::Ptr<cv::Feature2D> f2d = cv::xfeatures2d::SIFT::create();
-            
-            // Put words to images and index them
-            for(auto &img_path : files_list) {
-                cout << "Image : " << img_path << endl;
-                Image image(img_path);
-                // cout << "Computing image descriptors" << endl;
-                image.detectKeyPoints(f2d);
-                image.computeDescriptors(f2d);
-                // cout << "Computing image words" << endl;
-                image.computeWords(*kmeanstree);
-                // cout << "Indexing" << endl;
-                (*index).indexImage(image);
+                // Create SIFT instance
+                cout << "Creating SIFT instance" << endl;
+                cv::Ptr<cv::Feature2D> f2d = cv::xfeatures2d::SIFT::create();
+
+                // Put words to images and index them
+                for(auto &img_path : files_list) {
+                    cout << "Image : " << img_path << endl;
+                    Image image(img_path);
+                    // cout << "Computing image descriptors" << endl;
+                    image.detectKeyPoints(f2d);
+                    image.computeDescriptors(f2d);
+                    // cout << "Computing image words" << endl;
+                    image.computeWords(kmeanstree);
+                    // cout << "Indexing" << endl;
+                    index.indexImage(image);
+                }
+            } catch(const std::exception& e) {
+                cout << "Failed to index directory, an exception has occured." << endl;
+                cerr << e.what() << endl;
+                return false;
             }
-        } catch(const std::exception& e) {
-            return 1;
+            return true;
         }
-        return 0;
-    }
 
-    map<string, double> computeLikelihoods(const char* path) {
-        string p = string(path);
-        Image inputImg(p);
-        cv::Ptr<cv::Feature2D> f2d = cv::xfeatures2d::SIFT::create();
-        inputImg.detectKeyPoints(f2d);
-        inputImg.computeDescriptors(f2d);
-        inputImg.computeWords(*kmeanstree);
+        map<string, double> computeLikelihoods(const char* path) {
+            map<string, double> scores;
+            try {
+                cout << "a" << endl;
+                string p = string(path);
+                Image inputImg(p);
+                cv::Ptr<cv::Feature2D> f2d = cv::xfeatures2d::SIFT::create();
+                cout << "a" << endl;
+                inputImg.detectKeyPoints(f2d);
+                inputImg.computeDescriptors(f2d);
+                cout << "a" << endl;
+                inputImg.computeWords(kmeanstree);
+                cout << "a" << endl;
+                scores = index.getScores(inputImg);
+                cout << "a" << endl;
+            } catch(const std::exception& e) {
+                cout << "Failed to compute likelyhood, an exception has occured." << endl;
+                cerr << e.what() << endl;
+                return scores;
+            }
+            return scores;
+        }
 
-        map<string, double> scores = index->getScores(inputImg);
-        return scores;
-    }
+        bool write(string file) {
+            try {
+                std::ofstream ofs(file.c_str());
+                boost::archive::xml_oarchive oa(ofs);
+                Engine engine = *this;
+                oa << BOOST_SERIALIZATION_NVP(engine);
+            } catch(const std::exception& e) {
+                cout << "Failed to write to file, an exception has occured." << endl;
+                cerr << e.what() << endl;
+                return false;
+            }
+            return true;
+        }
 
-    void write(string file) {
-        std::ofstream ofs(file.c_str());
-        boost::archive::text_oarchive oa(ofs);
-        oa << (*kmeanstree);
-    }
-
-    void read(string file) {
-        std::ifstream ifs(file.c_str());
-        boost::archive::text_iarchive ia(ifs);
-        ia >> (*kmeanstree);
-    }
-
-    KMeansTree<Descriptor, double> *kmeanstree;
-    Index *index;
+        bool read(string file) {
+            try {
+                // Input archive
+                std::ifstream ifs(file.c_str());
+                boost::archive::xml_iarchive ia(ifs);
+                // Read
+                Engine &engine = *this;
+                ia >> BOOST_SERIALIZATION_NVP(engine);
+            } catch(const std::exception& e) {
+                cout << "Failed to read from file, an exception has occured." << endl;
+                cerr << e.what() << endl;
+                return false;
+            }
+            return true;
+        }
+    private:
+        friend class boost::serialization::access;
+        template<class Archive>
+            void serialize(Archive & ar, const unsigned int version) {
+                ar & boost::serialization::make_nvp("kmeanstree", kmeanstree);
+                ar & boost::serialization::make_nvp("index", index);
+            }
+        KMeansTree<Descriptor, double> kmeanstree;
+        Index index;
 };

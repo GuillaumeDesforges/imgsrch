@@ -8,8 +8,8 @@ using namespace std;
 #include "clustering/kmeans.h"
 #include "clustering/kmeanstree.h"
 
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/xml_iarchive.hpp>
+#include <boost/archive/xml_oarchive.hpp>
 
 int main() {
    cout << "Init data" << endl;
@@ -52,16 +52,16 @@ int main() {
     cout << "Serialize" << endl;
     {
         std::ofstream ofs("kmeans.txt");
-        boost::archive::text_oarchive oa(ofs);
-        oa << kmeans;
+        boost::archive::xml_oarchive oa(ofs);
+        oa << BOOST_SERIALIZATION_NVP(kmeans);
     }
 
     cout << "Deserialize" << endl;
     KMeans<Point<float>, float> kmeans1(0, 0);
     {
         std::ifstream ifs("kmeans.txt");
-        boost::archive::text_iarchive ia(ifs);
-        ia >> kmeans1;
+        boost::archive::xml_iarchive ia(ifs);
+        ia >> BOOST_SERIALIZATION_NVP(kmeans1);
     }
 
     cout << endl;
@@ -72,6 +72,8 @@ int main() {
     }
     cout << endl;
     
+    cout << kmeans1.getCluster(data[0]) << endl;
+
     // cout << "* Test KMeansTree" << endl;
     // KMeansTree<Point<float>, float> kmeanstree(n, D, 2, "");
     // kmeanstree.addPoints(data);
