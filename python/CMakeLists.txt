@@ -17,5 +17,5 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 SET(CMAKE_SWIG_FLAGS "")
 
 SET_SOURCE_FILES_PROPERTIES(imgsrch.i PROPERTIES CPLUSPLUS ON)
-SWIG_ADD_MODULE(imgsrch python imgsrch.i ../cpp/src/img/image.cpp ../cpp/src/img/index.cpp)
+SWIG_ADD_LIBRARY(imgsrch LANGUAGE python SOURCES imgsrch.i ../cpp/src/img/image.cpp ../cpp/src/img/index.cpp)
 SWIG_LINK_LIBRARIES(imgsrch ${PYTHON_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})

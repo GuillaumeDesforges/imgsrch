@@ -22,10 +22,6 @@ using namespace std;
 
 typedef Point<double> Descriptor;
 
-const int kmeansClusterNumberDefault = 5;
-const int kmeanstreeDepthDefault = 4;
-const int kmeanstreeTrainingSampleSizeDefault = 50000;
-
 template<class bidiiter>
 bidiiter random_unique(bidiiter begin, bidiiter end, size_t num_random) {
     size_t left = std::distance(begin, end);
@@ -41,12 +37,15 @@ bidiiter random_unique(bidiiter begin, bidiiter end, size_t num_random) {
 
 class Engine{
     public:
-        Engine(int kmeansClusterNumber = kmeansClusterNumberDefault, int kmeanstreeDepth = kmeanstreeDepthDefault) 
+        Engine() {
+        }
+        
+        Engine(int kmeansClusterNumber, int kmeanstreeDepth) 
         : kmeanstree(kmeansClusterNumber, 128, kmeanstreeDepth) {
 
         }
 
-        bool train(const char* path, int kmeanstreeTrainingSampleSize = kmeanstreeTrainingSampleSizeDefault) {
+        bool train(const char* path, int kmeanstreeTrainingSampleSize) {
             try {
                 // Load file list
                 // cout << "Loading file list" << endl;
@@ -61,18 +60,20 @@ class Engine{
                 int sampleSizePerImage = kmeanstreeTrainingSampleSize / files_list.size();
                 vector<Descriptor> trainingDescriptors;
                 for(auto &img_path : files_list) {
-                    cout << "Image : " << img_path << endl;
+                    cout << "Image : " << img_path << " ";
                     Image image(img_path);
                     // cout << "Computing image descriptors" << endl;
                     image.detectKeyPoints(f2d);
                     image.computeDescriptors(f2d);
                     vector<Descriptor> imageDescriptors = image.getDescriptors();
-                    random_unique(imageDescriptors.begin(), imageDescriptors.end(), sampleSizePerImage);
+                    int sampleSizeForThisImage = (sampleSizePerImage < image.getDescriptors().size()) ? sampleSizePerImage : image.getDescriptors().size();
+                    random_unique(imageDescriptors.begin(), imageDescriptors.end(), sampleSizeForThisImage);
                     // cout << "Sampling" << endl;
-                    for(int i = 0; i < sampleSizePerImage; i++) {
+                    for(int i = 0; i < sampleSizeForThisImage; i++) {
                         Descriptor descriptor = imageDescriptors[i];
                         trainingDescriptors.push_back(descriptor);
                     }
+                    cout << "(" << sampleSizeForThisImage << ")" << endl;
                 }
 
                 // Init and train KMeansTree
@@ -122,20 +123,15 @@ class Engine{
         map<string, double> computeLikelihoods(const char* path) {
             map<string, double> scores;
             try {
-                cout << "a" << endl;
                 string p = string(path);
                 Image inputImg(p);
                 cv::Ptr<cv::Feature2D> f2d = cv::xfeatures2d::SIFT::create();
-                cout << "a" << endl;
                 inputImg.detectKeyPoints(f2d);
                 inputImg.computeDescriptors(f2d);
-                cout << "a" << endl;
                 inputImg.computeWords(kmeanstree);
-                cout << "a" << endl;
                 scores = index.getScores(inputImg);
-                cout << "a" << endl;
             } catch(const std::exception& e) {
-                cout << "Failed to compute likelyhood, an exception has occured." << endl;
+                cout << "Failed to compute likelihood, an exception has occured." << endl;
                 cerr << e.what() << endl;
                 return scores;
             }
@@ -146,8 +142,8 @@ class Engine{
             try {
                 std::ofstream ofs(file.c_str());
                 boost::archive::xml_oarchive oa(ofs);
-                Engine engine = *this;
-                oa << BOOST_SERIALIZATION_NVP(engine);
+                oa << BOOST_SERIALIZATION_NVP(kmeanstree);
+                oa << BOOST_SERIALIZATION_NVP(index);
             } catch(const std::exception& e) {
                 cout << "Failed to write to file, an exception has occured." << endl;
                 cerr << e.what() << endl;
@@ -155,15 +151,15 @@ class Engine{
             }
             return true;
         }
-
+        
         bool read(string file) {
             try {
                 // Input archive
                 std::ifstream ifs(file.c_str());
                 boost::archive::xml_iarchive ia(ifs);
                 // Read
-                Engine &engine = *this;
-                ia >> BOOST_SERIALIZATION_NVP(engine);
+                ia >> BOOST_SERIALIZATION_NVP(kmeanstree);
+                ia >> BOOST_SERIALIZATION_NVP(index);
             } catch(const std::exception& e) {
                 cout << "Failed to read from file, an exception has occured." << endl;
                 cerr << e.what() << endl;

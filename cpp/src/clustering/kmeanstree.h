@@ -104,6 +104,7 @@ void KMeansTree<P, T>::init() {
 
 template<typename P, typename T>
 void KMeansTree<P, T>::fit() {
+    cout << "Training level " << this->depth << endl;
     kmeans.fit();
     if(depth > 0) {
         for(int i = 0; i < n_clusters; i++) {
@@ -115,6 +116,7 @@ void KMeansTree<P, T>::fit() {
             }
         }
     }
+    cout << "Done training level " << this->depth << endl;
 }
 
 template<typename P, typename T>
