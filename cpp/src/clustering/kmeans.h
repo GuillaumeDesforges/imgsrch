@@ -50,6 +50,8 @@ public:
 
     // Get if cluster was trained
     const bool isTrained() const;
+    //Get if cluster vas initiated
+    const bool isInit() const;
 private:
     friend class boost::serialization::access;
     template<class Archive>
@@ -69,6 +71,8 @@ private:
 
     bool update();
     void computeMeans();
+
+    int iterations = 0;
 };
 
 template<typename P, typename T>
@@ -84,6 +88,11 @@ KMeans<P, T>::KMeans(int n_clusters, int dimension) {
 
 template<typename P, typename T>
 void KMeans<P, T>::addPoint(P *point) {
+    if((*point).getDimension() != dimension) {
+        stringstream ss;
+        ss << "Tried to insert Point of dimension " << (*point).getDimension() << " in KMeans of dimension " << dimension;
+        throw ss.str();
+    }
     data.push_back(point);
 }
 
@@ -159,8 +168,10 @@ void KMeans<P, T>::init() {
         p = *(data[indexes[k]]);
         means[k] = p;
     }
-    assert(means.size() == n_clusters);
-    initiated = true;
+   assert(means.size() == n_clusters);
+   initiated = true;
+
+    iterations = 0;
 }
 
 template<typename P, typename T>
@@ -206,9 +217,13 @@ void KMeans<P, T>::fit() {
     bool changed = true;
     int iteration = 0;
     while (changed) {
-        // cout << "Iteration " << iteration << endl;
         changed = update();
+        // Local iterations
+        // cout << "Iteration " << iteration << endl;
         iteration++;
+        // Global iterations
+        // cout << "Global iteration " << iterations << endl;
+        iterations++;
     }
     trained = true;
 }
@@ -238,4 +253,9 @@ void KMeans<P, T>::computeMeans() {
 template<typename P, typename T>
 const bool KMeans<P, T>::isTrained() const {
     return trained;
+}
+
+template<typename P, typename T>
+const bool KMeans<P, T>::isInit() const {
+    return initiated;
 }
