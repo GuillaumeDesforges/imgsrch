@@ -143,23 +143,23 @@ public:
       TS_ASSERT_EQUALS(partitions[cluster0].size(), 2);
       TS_ASSERT_EQUALS(partitions[cluster2].size(), 2);
       //Can be improved by checking the 2 partitions
-}
+    }
 
-void test_serialize(void) {
-  KMeans<Point<float>, float> kmeans(2,8);
-  TS_ASSERT_THROWS_NOTHING(kmeans.serialize());
-  Point<float> p0(8);
-  for (int i=0; i<8; i++)
-    p0[i]=1;
-  std::vector<Point<float>> v (5,p0);
-  kmeans.addPoints(v);
-  kmeans.init();
-  kmeans.fit();
-  TS_ASSERT_THROWS_NOTHING(kmeans.serialize());
-}
+    // void test_serialize(void) {
+    //     KMeans<Point<float>, float> kmeans(2,8);
+    //     TS_ASSERT_THROWS_NOTHING(kmeans.serialize());
+    //     Point<float> p0(8);
+    //     for (int i=0; i<8; i++)
+    //         p0[i]=1;
+    //     std::vector<Point<float>> v (5,p0);
+    //     kmeans.addPoints(v);
+    //     kmeans.init();
+    //     kmeans.fit();
+    //     TS_ASSERT_THROWS_NOTHING(kmeans.serialize());
+    // }
 
 
 
 private:
-    // KMeans<Point<int>, int> *km1, *km2;
+// KMeans<Point<int>, int> *km1, *km2;
 };
