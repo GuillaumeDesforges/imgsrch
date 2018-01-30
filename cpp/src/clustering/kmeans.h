@@ -10,6 +10,8 @@
 #include <sstream>
 using namespace std;
 
+#include <boost/serialization/vector.hpp>
+
 /**
     \class KMeans
     \brief Class that holds the algorithm for vector of type P<T>, P structured as Point
@@ -18,8 +20,8 @@ template<typename P, typename T>
 class KMeans {
 public:
     // Constructor
+    KMeans() {}
     KMeans(int n_clusters, int dimension);
-    KMeans(string s);
 
     // Get closest cluster
     int getCluster(const P &point) const;
@@ -46,14 +48,21 @@ public:
     // Get training clusters
     vector<vector<P*>> getPartitions() const;
 
-    // Serialize
-    string serialize();
-
     // Get if cluster was trained
     const bool isTrained() const;
     //Get if cluster vas initiated
     const bool isInit() const;
 private:
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version) {
+        ar & BOOST_SERIALIZATION_NVP(n_clusters);
+        ar & BOOST_SERIALIZATION_NVP(dimension);
+        ar & BOOST_SERIALIZATION_NVP(initiated);
+        ar & BOOST_SERIALIZATION_NVP(trained);
+        ar & BOOST_SERIALIZATION_NVP(means);
+    }
+
     int n_clusters, dimension;
     vector<P*> data;
     vector<P> means;
@@ -75,25 +84,6 @@ KMeans<P, T>::KMeans(int n_clusters, int dimension) {
     for(int i = 0; i < n_clusters; i++) {
         means.push_back(P(dimension));
     }
-}
-
-template<typename P, typename T>
-KMeans<P, T>::KMeans(string s) {
-    stringstream ss(s);
-    string s0;
-    getline(ss, s0);
-    stringstream ss0(s0);
-    ss0 >> n_clusters >> dimension;
-    means = vector<P>();
-    string s_i;
-    for(int i_cluster = 0; i_cluster < n_clusters; i_cluster++) {
-        getline(ss, s_i);
-        P p_i(s_i);
-        assert(p_i.getDimension() == dimension);
-        means.push_back(p_i);
-    }
-    initiated = true;
-    trained = true;
 }
 
 template<typename P, typename T>
@@ -142,7 +132,12 @@ void KMeans<P, T>::setPoints(vector<P> &points) {
 
 template<typename P, typename T>
 int KMeans<P, T>::getCluster(const P &point) const {
-    assert(initiated);
+    // cout << "getCluster initiated " << initiated << endl;
+    // cout << "getCluster means " << means.size() << endl;
+    if(!initiated) {
+        cout << "KMeans has not been initiated" << endl;
+        throw string("KMeans has not been initiated");
+    }
     // Compute distances between points and clusters
     vector<T> distances(n_clusters);
     for(int k = 0; k < n_clusters; k++) {
@@ -156,7 +151,9 @@ int KMeans<P, T>::getCluster(const P &point) const {
 
 template<typename P, typename T>
 void KMeans<P, T>::init() {
-    assert(data.size() >= n_clusters);
+    if(data.size() < n_clusters) {
+        throw string("Not enough data to train KMeans");
+    }
     // Select random points
     // TODO improve kmeans init to select relevant starting points
     vector<int> indexes(data.size());
@@ -251,17 +248,6 @@ void KMeans<P, T>::computeMeans() {
         }
         means[i] /= partitions[i].size();
     }
-}
-
-template<typename P, typename T>
-string KMeans<P, T>::serialize() {
-    stringstream ss;
-    ss << n_clusters << " " << dimension << endl;
-    for(auto& mean : means) {
-        ss << mean << endl;
-    }
-    string o = ss.str();
-    return o;
 }
 
 template<typename P, typename T>

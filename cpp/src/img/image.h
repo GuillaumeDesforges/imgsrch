@@ -19,6 +19,7 @@ public:
     void detectKeyPoints(cv::Ptr<cv::Feature2D> &f2d);
     void showKeyPoints();
     void computeDescriptors(cv::Ptr<cv::Feature2D> &f2d);
+    vector<cv::KeyPoint> getKeyPoints() const;
     vector<Point<double>> getDescriptors() const;
     void computeWords(KMeansTree<Point<double>, double> &kmeanstree);
     const vector<string>& getWords() const;
