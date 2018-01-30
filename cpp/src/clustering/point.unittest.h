@@ -95,23 +95,41 @@ public:
 
   void test_float_assert(void){
     Point<float> p0(8);
-    p0[0]=0.5;
-    TS_ASSERT_DELTA(p0[0], 0.5, 1e-7);
+    p0[0]=float(0.5);
+    TS_ASSERT_EQUALS(p0[0], 0.5);
   }
 
 void test_float_assign (void){
   Point<float> p0(8);
   Point<float> p1(8);
   for (int i=0; i<8; i++){
-      p0[i]=0.2;
-      p1[i]=0.6;
+      p0[i]=float(0.2);
+      p1[i]=float(0.6);
     }
     p0 = p1;
     for (int i=0; i<8; i++){
-        TS_ASSERT_DELTA(p0[i], 0.6, 1e-7);
-        TS_ASSERT_DELTA(p1[i], 0.6, 1e-7);
+        TS_ASSERT_EQUALS(p0[i], float(0.6));
+        TS_ASSERT_EQUALS(p1[i], float(0.6));
       }
   }
+
+void test_float_operators(void){
+  Point<float> p0(8), p1(8), p2(8);
+  for (int i=0; i<8; i++){
+      p0[i]=float(0.2);
+      p1[i]=float(0.6);
+    }
+  p0+= p1;
+  for (int i=0; i<8; i++) {
+    TS_ASSERT_EQUALS(p0[i], float(0.8));
+    TS_ASSERT_EQUALS(p1[i], float(0.6));
+
+  }
+  p1*= 0.3;
+  for (int i=0; i<8; i++) {
+    TS_ASSERT_EQUALS(p1[i], float(0.18));
+  }
+}
 
 private:
     // Point<int> *pi_0, *pi_1;
