@@ -20,8 +20,6 @@ using namespace std;
 #include <boost/archive/xml_iarchive.hpp>
 #include <boost/archive/xml_oarchive.hpp>
 
-typedef Point<double> Descriptor;
-
 template<class bidiiter>
 bidiiter random_unique(bidiiter begin, bidiiter end, size_t num_random) {
     size_t left = std::distance(begin, end);
@@ -73,7 +71,7 @@ class Engine{
                         Descriptor descriptor = imageDescriptors[i];
                         trainingDescriptors.push_back(descriptor);
                     }
-                    cout << "(" << sampleSizeForThisImage << ")" << endl;
+                    cout << ", " << sampleSizeForThisImage << endl;
                 }
 
                 // Init and train KMeansTree
@@ -102,14 +100,13 @@ class Engine{
 
                 // Put words to images and index them
                 for(auto &img_path : files_list) {
-                    cout << "Image : " << img_path << endl;
+                    cout << "Image : " << img_path << ", ";
                     Image image(img_path);
-                    // cout << "Computing image descriptors" << endl;
                     image.detectKeyPoints(f2d);
                     image.computeDescriptors(f2d);
-                    // cout << "Computing image words" << endl;
+                    cout << image.getDescriptors().size() << ", ";
                     image.computeWords(kmeanstree);
-                    // cout << "Indexing" << endl;
+                    cout << image.getWords().size() << endl;
                     index.indexImage(image);
                 }
             } catch(const std::exception& e) {
@@ -120,8 +117,8 @@ class Engine{
             return true;
         }
 
-        map<string, double> computeLikelihoods(const char* path) {
-            map<string, double> scores;
+        map<string, float> computeLikelihoods(const char* path) {
+            map<string, float> scores;
             try {
                 string p = string(path);
                 Image inputImg(p);
@@ -174,6 +171,6 @@ class Engine{
                 ar & boost::serialization::make_nvp("kmeanstree", kmeanstree);
                 ar & boost::serialization::make_nvp("index", index);
             }
-        KMeansTree<Descriptor, double> kmeanstree;
+        KMeansTree<Descriptor, float> kmeanstree;
         Index index;
 };

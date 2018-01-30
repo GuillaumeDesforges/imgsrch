@@ -2,17 +2,14 @@
 %{
 #include "imgsrch.h"
 #include <map>
-#include <set>
 #include <string>
 %}
 
 %include "std_map.i"
-%include "std_set.i"
 %include "std_string.i"
 
 namespace std {
-    %template() map<string, double>;
-    %template() set<string>;
+    %template() map<string, float>;
 }
 
 %include "imgsrch.h"

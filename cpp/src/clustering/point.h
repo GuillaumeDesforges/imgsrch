@@ -8,6 +8,7 @@ using namespace std;
 
 #include <boost/serialization/vector.hpp>
 
+
 /**
     \class Point
     \brief Usual representation of a point in space T^d

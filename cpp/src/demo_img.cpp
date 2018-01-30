@@ -22,8 +22,8 @@ int main(int argc, char** argv )
     img.computeDescriptors(f2d);
     img.showKeyPoints();
 
-    KMeansTree<Point<double>, double> kmeanstree(4, 128, 2, "");
-    vector<Point<double>> descriptors = img.getDescriptors();
+    KMeansTree<Point<float>, float> kmeanstree(4, 128, 2, "");
+    vector<Point<float>> descriptors = img.getDescriptors();
     kmeanstree.addPoints(descriptors);
     kmeanstree.init();
     kmeanstree.fit();
