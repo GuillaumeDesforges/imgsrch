@@ -104,9 +104,8 @@ class Engine{
                     Image image(img_path);
                     image.detectKeyPoints(f2d);
                     image.computeDescriptors(f2d);
-                    cout << image.getDescriptors().size() << ", ";
+                    cout << image.getDescriptors().size() << endl;
                     image.computeWords(kmeanstree);
-                    cout << image.getWords().size() << endl;
                     index.indexImage(image);
                 }
             } catch(const std::exception& e) {
@@ -165,12 +164,6 @@ class Engine{
             return true;
         }
     private:
-        friend class boost::serialization::access;
-        template<class Archive>
-            void serialize(Archive & ar, const unsigned int version) {
-                ar & boost::serialization::make_nvp("kmeanstree", kmeanstree);
-                ar & boost::serialization::make_nvp("index", index);
-            }
         KMeansTree<Descriptor, float> kmeanstree;
         Index index;
 };

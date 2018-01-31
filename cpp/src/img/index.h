@@ -25,6 +25,5 @@ private:
     void serialize(Archive & ar, const unsigned int version) {
         ar & BOOST_SERIALIZATION_NVP(index);
     }
-    
     map<string, set<string>> index;
 };

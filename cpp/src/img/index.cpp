@@ -45,13 +45,10 @@ map<string, float> Index::getScores(const Image &image) {
     vector<string> words_vect = image.getWords();
     set<string> words(words_vect.begin(), words_vect.end());
     for(auto& word : words) {
-        // cint counterout << word << ", ";
         for(auto& image_path : getImagesPathWithWord(word)) {
             scores[image_path]++;
-            // cout << "(" << word << ") " << image_path << endl;
         }
     }
-    // cout << endl;
     for(auto& entry : scores) {
         entry.second /= words.size();
     }

@@ -62,9 +62,7 @@ void Image::computeWords(KMeansTree<Descriptor, float> &kmeanstree) {
     int i = 0;
     for(auto& point : descriptors) {
         words.push_back(kmeanstree.getWord(point));
-        // cout << "\r" << i++ << flush;
     }
-    // cout << endl;
 }
 
 const vector<string>& Image::getWords() const {
