@@ -20,7 +20,7 @@ using namespace std;
 #include <boost/archive/xml_iarchive.hpp>
 #include <boost/archive/xml_oarchive.hpp>
 
-typedef Point<double> Descriptor;
+typedef Point<float> Descriptor;
 
 template<class bidiiter>
 bidiiter random_unique(bidiiter begin, bidiiter end, size_t num_random) {
@@ -37,12 +37,22 @@ bidiiter random_unique(bidiiter begin, bidiiter end, size_t num_random) {
 
 class Engine{
     public:
-        Engine() {
+        Engine(string file) {
+            try {
+                // Input archive
+                std::ifstream ifs(file.c_str());
+                boost::archive::xml_iarchive ia(ifs);
+                // Read
+                ia >> BOOST_SERIALIZATION_NVP(kmeanstree);
+                ia >> BOOST_SERIALIZATION_NVP(index);
+            } catch(const std::exception& e) {
+                cout << "Failed to read from file, an exception has occured." << endl;
+                cerr << e.what() << endl;
+            }
         }
         
         Engine(int kmeansClusterNumber, int kmeanstreeDepth) 
         : kmeanstree(kmeansClusterNumber, 128, kmeanstreeDepth) {
-
         }
 
         bool train(const char* path, int kmeanstreeTrainingSampleSize) {
@@ -120,8 +130,8 @@ class Engine{
             return true;
         }
 
-        map<string, double> computeLikelihoods(const char* path) {
-            map<string, double> scores;
+        map<string, float> computeLikelihoods(const char* path) {
+            map<string, float> scores;
             try {
                 string p = string(path);
                 Image inputImg(p);
@@ -153,18 +163,7 @@ class Engine{
         }
         
         bool read(string file) {
-            try {
-                // Input archive
-                std::ifstream ifs(file.c_str());
-                boost::archive::xml_iarchive ia(ifs);
-                // Read
-                ia >> BOOST_SERIALIZATION_NVP(kmeanstree);
-                ia >> BOOST_SERIALIZATION_NVP(index);
-            } catch(const std::exception& e) {
-                cout << "Failed to read from file, an exception has occured." << endl;
-                cerr << e.what() << endl;
-                return false;
-            }
+            
             return true;
         }
     private:
@@ -174,6 +173,6 @@ class Engine{
                 ar & boost::serialization::make_nvp("kmeanstree", kmeanstree);
                 ar & boost::serialization::make_nvp("index", index);
             }
-        KMeansTree<Descriptor, double> kmeanstree;
+        KMeansTree<Descriptor, float> kmeanstree;
         Index index;
 };

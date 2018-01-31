@@ -12,7 +12,7 @@ namespace fs = boost::filesystem;
 
 #include "utils.h"
 
-typedef Point<double> Descriptor;
+typedef Point<float> Descriptor;
 
 vector<Image> load_multiple_images(vector<string> &file_list) {
     vector<Image> images;
@@ -84,7 +84,7 @@ int main(int argc, char** argv)
     // Create and train KMeansTree
     const int kmeanstreeDepth = 6;
     const int kmeanstreeNumberOfClusters = 5;
-    KMeansTree<Descriptor, double> kmeanstree(kmeanstreeNumberOfClusters, 128, kmeanstreeDepth);
+    KMeansTree<Descriptor, float> kmeanstree(kmeanstreeNumberOfClusters, 128, kmeanstreeDepth);
     cout << "Instianciating KMeansTree" << endl;
     
     kmeanstree.addPoints(trainingSetDescriptors);
@@ -114,7 +114,7 @@ int main(int argc, char** argv)
 
     // Search
     cout << "Test : votes for " << images[0].getPath() << endl;
-    map<string, double> scores = index.getScores(images[0]);
+    map<string, float> scores = index.getScores(images[0]);
     for(auto& entry : scores) {
         cout << entry.first << " => score = " << entry.second << endl;
     }

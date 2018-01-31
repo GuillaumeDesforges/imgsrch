@@ -43,6 +43,7 @@ private:
     void serialize(Archive & ar, const unsigned int version) {
         ar & BOOST_SERIALIZATION_NVP(n_clusters);
         ar & BOOST_SERIALIZATION_NVP(depth);
+        ar & BOOST_SERIALIZATION_NVP(prefix);
         ar & BOOST_SERIALIZATION_NVP(kmeans);
         ar & BOOST_SERIALIZATION_NVP(subtrees);
     }
