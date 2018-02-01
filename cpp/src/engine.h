@@ -10,12 +10,12 @@ using namespace std;
 #include <opencv2/opencv.hpp>
 #include <opencv2/xfeatures2d.hpp>
 
-#include "../cpp/src/utils.h"
+#include "utils.h"
 
-#include "../cpp/src/clustering/point.h"
-#include "../cpp/src/clustering/kmeanstree.h"
-#include "../cpp/src/img/image.h"
-#include "../cpp/src/img/index.h"
+#include "clustering/point.h"
+#include "clustering/kmeanstree.h"
+#include "img/image.h"
+#include "img/index.h"
 
 #include <boost/archive/xml_iarchive.hpp>
 #include <boost/archive/xml_oarchive.hpp>
