@@ -8,6 +8,7 @@ using namespace std;
 #include <opencv2/opencv.hpp>
 #include <opencv2/xfeatures2d.hpp>
 
+
 Image::Image(string path) : path(path) {
     image = cv::imread(path, 1);
     if (!image.data) {
@@ -61,9 +62,7 @@ void Image::computeWords(KMeansTree<Descriptor, float> &kmeanstree) {
     int i = 0;
     for(auto& point : descriptors) {
         words.push_back(kmeanstree.getWord(point));
-        // cout << "\r" << i++ << flush;
     }
-    // cout << endl;
 }
 
 const vector<string>& Image::getWords() const {

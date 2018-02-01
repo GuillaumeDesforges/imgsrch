@@ -13,7 +13,6 @@ namespace fs = boost::filesystem;
 #include "utils.h"
 
 typedef Point<float> Descriptor;
-
 vector<Image> load_multiple_images(vector<string> &file_list) {
     vector<Image> images;
     int counter = 0;

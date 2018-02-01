@@ -56,17 +56,17 @@ file(GLOB img_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/src/img/*.cpp"
 )
 
-add_executable(clustering ${CMAKE_CURRENT_SOURCE_DIR}/src/demo_clustering.cpp ${clustering_SRC})
-target_link_libraries(clustering LINK_PUBLIC ${Boost_LIBRARIES})
+add_executable(demo_clustering ${CMAKE_CURRENT_SOURCE_DIR}/src/demo_clustering.cpp ${clustering_SRC})
+target_link_libraries(demo_clustering LINK_PUBLIC ${Boost_LIBRARIES})
 
-add_executable(serialize ${CMAKE_CURRENT_SOURCE_DIR}/src/demo_serialize.cpp ${clustering_SRC})
-target_link_libraries(serialize LINK_PUBLIC ${Boost_LIBRARIES})
+add_executable(demo_serialize ${CMAKE_CURRENT_SOURCE_DIR}/src/demo_serialize.cpp ${clustering_SRC})
+target_link_libraries(demo_serialize LINK_PUBLIC ${Boost_LIBRARIES})
 
-add_executable(img ${CMAKE_CURRENT_SOURCE_DIR}/src/demo_img.cpp ${clustering_SRC} ${img_SRC})
-target_link_libraries(img LINK_PUBLIC ${OpenCV_LIBS} ${Boost_LIBRARIES})
+add_executable(demo_img ${CMAKE_CURRENT_SOURCE_DIR}/src/demo_img.cpp ${clustering_SRC} ${img_SRC})
+target_link_libraries(demo_img LINK_PUBLIC ${OpenCV_LIBS} ${Boost_LIBRARIES})
 
-add_executable(index ${CMAKE_CURRENT_SOURCE_DIR}/src/demo_index.cpp ${clustering_SRC} ${img_SRC})
-target_link_libraries(index LINK_PUBLIC ${OpenCV_LIBS} ${Boost_LIBRARIES})
+add_executable(demo_index ${CMAKE_CURRENT_SOURCE_DIR}/src/demo_index.cpp ${clustering_SRC} ${img_SRC})
+target_link_libraries(demo_index LINK_PUBLIC ${OpenCV_LIBS} ${Boost_LIBRARIES})
 
 # ============= Documentation
 

@@ -70,7 +70,7 @@ class Engine{
                 int sampleSizePerImage = kmeanstreeTrainingSampleSize / files_list.size();
                 vector<Descriptor> trainingDescriptors;
                 for(auto &img_path : files_list) {
-                    cout << "Image : " << img_path << " ";
+                    cout << "Image : " << img_path;
                     Image image(img_path);
                     // cout << "Computing image descriptors" << endl;
                     image.detectKeyPoints(f2d);
@@ -83,7 +83,7 @@ class Engine{
                         Descriptor descriptor = imageDescriptors[i];
                         trainingDescriptors.push_back(descriptor);
                     }
-                    cout << "(" << sampleSizeForThisImage << ")" << endl;
+                    cout << ", " << sampleSizeForThisImage << endl;
                 }
 
                 // Init and train KMeansTree
@@ -112,14 +112,12 @@ class Engine{
 
                 // Put words to images and index them
                 for(auto &img_path : files_list) {
-                    cout << "Image : " << img_path << endl;
+                    cout << "Image : " << img_path;
                     Image image(img_path);
-                    // cout << "Computing image descriptors" << endl;
                     image.detectKeyPoints(f2d);
                     image.computeDescriptors(f2d);
-                    // cout << "Computing image words" << endl;
+                    cout << " " << image.getDescriptors().size() << endl;
                     image.computeWords(kmeanstree);
-                    // cout << "Indexing" << endl;
                     index.indexImage(image);
                 }
             } catch(const std::exception& e) {
@@ -161,18 +159,7 @@ class Engine{
             }
             return true;
         }
-        
-        bool read(string file) {
-            
-            return true;
-        }
     private:
-        friend class boost::serialization::access;
-        template<class Archive>
-            void serialize(Archive & ar, const unsigned int version) {
-                ar & boost::serialization::make_nvp("kmeanstree", kmeanstree);
-                ar & boost::serialization::make_nvp("index", index);
-            }
         KMeansTree<Descriptor, float> kmeanstree;
         Index index;
 };

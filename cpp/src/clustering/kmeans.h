@@ -145,7 +145,10 @@ int KMeans<P, T>::getCluster(const P &point) const {
     }
     // Get the index of the closest cluster
     int best_cluster = min_element(distances.begin(), distances.end()) - distances.begin();
-    assert(0 <= best_cluster && best_cluster < n_clusters);
+    if(0 > best_cluster || best_cluster >= n_clusters) {
+        cout << "Cluster found out of bound" << endl;
+        throw string("Cluster found out of bound");
+    }
     return best_cluster;
 }
 
