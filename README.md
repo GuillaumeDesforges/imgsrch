@@ -65,7 +65,7 @@ Pictures that are most likely "alike" are those sharing a lot of those features.
 Once compiled, both `_imgsrch.so` and `imgsrch.py` are generated. Copy/paste them in the folder of your project to use them.
 
 You can train your own engine :
-```
+```python
 from imgsrch import Engine
 engine = Engine(4, 6) # 4 clusters, depth of 6
 trained = engine.train("path/to/images/folder/", 1000000) # train KMeansTree on a random sample of total size 1000000
@@ -80,7 +80,7 @@ engine.write("engine.xml")
 ```
 
 And then in your application:
-```
+```python
 from imgsrch import Engine
 engine = Engine("engine.xml")
 ```
